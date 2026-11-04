@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
+/* As cores de acento do tema claro têm contraste WCAG AA. Os adesivos do cubo
+   têm paleta própria em lib/cube-theme.ts. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-2: #e9e9ec;
+  --border: #e4e4e7;
+  --text: #18181b;
+  --muted: #52525b;
+  --ink: #18181b;
+  --ink-contrast: #ffffff;
+  --frame: #121316;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --cube-yellow: #ca8a04;
+  --cube-green: #15803d;
+  --cube-blue: #2f55d4;
+  --cube-red: #c8281e;
+  --cube-orange: #c2410c;
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --bg: #0d0e10;
+    --surface: #15161a;
+    --surface-2: #1c1e22;
+    --border: #2a2d33;
+    --text: #eef0f2;
+    --muted: #9097a0;
+    --ink: #eef0f2;
+    --ink-contrast: #0d0e10;
+    --frame: #08090a;
+
+    --cube-yellow: #f2c230;
+    --cube-green: #1f9d5a;
+    --cube-blue: #2f55d4;
+    --cube-red: #e03a2f;
+    --cube-orange: #f07a2a;
+    color-scheme: dark;
   }
 }
 
+:root[data-theme="dark"] {
+  --bg: #0d0e10;
+  --surface: #15161a;
+  --surface-2: #1c1e22;
+  --border: #2a2d33;
+  --text: #eef0f2;
+  --muted: #9097a0;
+  --ink: #eef0f2;
+  --ink-contrast: #0d0e10;
+  --frame: #08090a;
+
+  --cube-yellow: #f2c230;
+  --cube-green: #1f9d5a;
+  --cube-blue: #2f55d4;
+  --cube-red: #e03a2f;
+  --cube-orange: #f07a2a;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-ink: var(--ink);
+  --color-ink-contrast: var(--ink-contrast);
+  --color-frame: var(--frame);
+  --color-brand: var(--cube-green);
+  --color-danger: var(--cube-red);
+  --color-cube-yellow: var(--cube-yellow);
+  --color-cube-green: var(--cube-green);
+  --color-cube-blue: var(--cube-blue);
+  --color-cube-red: var(--cube-red);
+  --color-cube-orange: var(--cube-orange);
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-plex-mono);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-geist), system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Largura de todas as páginas: ocupa a janela, com margem proporcional a ela. */
+.page-width {
+  width: 100%;
+  max-width: 2000px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 3.5vw, 4rem);
+}
+
+/* O wrapper interno do TwistyPlayer usa `contain: size`; sem trilhas
+   explícitas no grid do host, ele fica com altura 0 quando não há controles. */
+twisty-player {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
 }

@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RoadCube
 
-## Getting Started
+Plataforma gamificada para aprender a resolver o Cubo Mágico, do método básico ao CFOP completo, em uma trilha no estilo dos apps de idiomas: lições curtas, XP, vidas, ofensiva diária e repetição espaçada.
 
-First, run the development server:
+## Rodando
+
+O app exige um projeto Supabase: siga [docs/SUPABASE.md](docs/SUPABASE.md) antes de iniciar.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
+npm run build        # build de produção
+npm run lint
+npm run typecheck
+npm run verify:algs  # valida todos os algoritmos simulando-os no cubo
+npm run verify:lessons  # confere a ordem da trilha com a tabela do banco
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Funcionalidades
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Trilha** (`/`): 5 módulos e 25 lições em sequência. Cada lição desbloqueia a próxima.
+- **Lições** (`/lesson/[id]`): teoria com cubo 3D animado, quiz de notação, identificação de caso, montagem de algoritmo e desafio de resolução (cubo virtual validado automaticamente ou cubo real com timer). Exercícios errados voltam para o fim da fila e custam 1 vida.
+- **Treino** (`/train`): timer de speedcubing (segure espaço e solte), scrambles aleatórios, treino de casos selecionados e estatísticas (melhor tempo, ao5 e ao12 no padrão WCA).
+- **Revisão** (`/review`): repetição espaçada (SM-2) dos algoritmos aprendidos. Concluir uma prática devolve 1 vida.
+- **Biblioteca** (`/library`): todos os casos com animação e algoritmos alternativos. O algoritmo marcado como preferido é o usado no treino e na revisão.
+- **Perfil** (`/profile`): nível, XP semanal, ofensiva, histórico e configurações.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Estrutura
 
-## Learn More
+```
+src/
+  app/                 rotas: (auth) é pública; (app) exige login, e (main) tem a navegação
+  proxy.ts             sessão e proteção de rotas
+  components/          UI por área: cube, lesson, trail, train, review, library, profile, shell, ui
+  data/
+    algorithms.ts      biblioteca de casos e algoritmos (validada por scripts/verify-algs.mts)
+    curriculum.ts      módulos, lições e exercícios
+  lib/                 lógica pura: gamificação, SRS, scramble, estado (zustand), validação do cubo
+scripts/verify-algs.mts
+supabase/migrations/   esquema do banco e políticas RLS
+docs/ARQUITETURA.md    decisões técnicas e próximos passos
+docs/SUPABASE.md       configuração do Supabase e do login com Google
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Next.js 16 (App Router, Turbopack), React 19, Supabase (Auth + Postgres com RLS), Tailwind CSS 4, Framer Motion, Lucide, zustand e [cubing.js](https://js.cubing.net/cubing/) (TwistyPlayer para o 3D e kpuzzle para simular o cubo).
