@@ -62,7 +62,7 @@ function ScrambleTrainer() {
               <button
                 type="button"
                 onClick={() => setScramble(randomScramble(length))}
-                className="flex items-center gap-1.5 font-mono text-xs text-muted transition hover:text-text"
+                className="-my-2 flex items-center gap-1.5 py-2 font-mono text-xs text-muted transition hover:text-text"
               >
                 <RefreshCw className="size-3.5" /> novo
               </button>

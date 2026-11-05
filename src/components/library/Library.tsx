@@ -57,7 +57,7 @@ export function Library() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar caso"
-            className="min-w-0 flex-1 bg-transparent text-[15px] outline-none"
+            className="h-full min-w-0 flex-1 bg-transparent text-[15px] outline-none"
           />
         </label>
       </div>
@@ -146,7 +146,7 @@ function CaseRow({ c, onPlay }: { c: AlgCase; onPlay: (alg: string) => void }) {
                 aria-label="Definir como preferido"
                 title="Algoritmo preferido"
                 onClick={() => setPreferred(c.id, i)}
-                className={cn("shrink-0 transition", i === preferred ? "text-cube-yellow" : "text-border hover:text-muted")}
+                className={cn("-m-2 shrink-0 p-2 transition", i === preferred ? "text-cube-yellow" : "text-border hover:text-muted")}
               >
                 <Star className="size-4" fill={i === preferred ? "currentColor" : "none"} />
               </button>
@@ -158,7 +158,7 @@ function CaseRow({ c, onPlay }: { c: AlgCase; onPlay: (alg: string) => void }) {
                 type="button"
                 aria-label="Ver animação"
                 onClick={() => onPlay(alg)}
-                className="shrink-0 rounded p-1 text-muted transition hover:bg-surface-2 hover:text-text"
+                className="-m-1 shrink-0 rounded p-2 text-muted transition hover:bg-surface-2 hover:text-text"
               >
                 <Play className="size-3.5" fill="currentColor" />
               </button>

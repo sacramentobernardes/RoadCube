@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ALG_CASES } from "@/data/algorithms";
-import { DAILY_TIPS, HOW_IT_WORKS } from "@/data/tips";
+import { DAILY_TIPS } from "@/data/tips";
 import { addDays, dayKey, daysBetween } from "@/lib/dates";
 import { useRoadCube } from "@/lib/store";
 import { cn } from "@/lib/cn";
@@ -55,7 +55,7 @@ export function TodayPanel() {
         <div className="mt-3 text-xl font-bold tracking-tight">{featured.name}</div>
         <p className="mt-1 text-sm text-muted">{featured.group}</p>
         <AlgDisplay alg={featured.algs[0]} size="sm" className="mt-3" />
-        <Link href="/library" className="group mt-3 inline-flex items-center gap-1 text-sm underline underline-offset-2">
+        <Link href="/library" className="group mt-1 inline-flex items-center gap-1 py-2 text-sm underline underline-offset-2">
           Ver na biblioteca <ArrowRight className="size-3.5 transition group-hover:translate-x-0.5" />
         </Link>
       </div>
@@ -64,23 +64,6 @@ export function TodayPanel() {
         <Kicker>Dica do dia</Kicker>
         <p className="mt-3 max-w-[50ch] text-lg leading-relaxed">{tip}</p>
       </div>
-    </section>
-  );
-}
-
-export function HowItWorks() {
-  return (
-    <section className="mt-16">
-      <h2 className="text-2xl font-bold tracking-tight">Como a trilha funciona</h2>
-      <ol className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-8 md:grid-cols-3">
-        {HOW_IT_WORKS.map((step, i) => (
-          <li key={step.title}>
-            <Kicker>Passo {i + 1}</Kicker>
-            <h3 className="mt-2 text-xl font-bold tracking-tight">{step.title}</h3>
-            <p className="mt-1 max-w-[46ch] leading-relaxed text-muted">{step.text}</p>
-          </li>
-        ))}
-      </ol>
     </section>
   );
 }

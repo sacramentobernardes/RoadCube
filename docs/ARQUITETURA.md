@@ -12,6 +12,10 @@ Home: painel do dia (`TodayPanel`) e trilha em módulos recolhíveis (`ModuleLis
 
 Avatar e preferências ficam em `profiles.settings` (jsonb): a foto é reduzida a 160 px no navegador e salva como data URL, sem Storage. Novas chaves precisam de valor em `DEFAULT_SETTINGS`, que completa o que falta em contas antigas.
 
+`/` mostra duas páginas no mesmo endereço: o proxy reescreve para `/inicio` (`components/landing`) quem não tem sessão, e quem está logado vê a trilha. Com o Supabase fora do ar, o proxy não trata a pessoa como anônima e `app/error.tsx` assume.
+
+A CSP é gerada por requisição em `lib/csp.ts`, com nonce, ainda em modo de relatório. Os demais cabeçalhos de segurança ficam em `next.config.ts`.
+
 ## Visão geral
 
 Aplicação Next.js 16 (App Router). As páginas são leves e delegam a componentes cliente, porque quase tudo depende do progresso do usuário e do cubo 3D, que só existe no navegador.

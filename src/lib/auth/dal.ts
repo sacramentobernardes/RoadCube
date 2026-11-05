@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { isAuthRetryableFetchError } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -11,6 +12,8 @@ import { createClient } from "@/lib/supabase/server";
 export const requireUser = cache(async () => {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
+  // Serviço fora do ar não é sessão inválida: quem cuida disso é app/error.tsx.
+  if (isAuthRetryableFetchError(error)) throw error;
   if (error || !data.user) redirect("/login");
   return data.user;
 });

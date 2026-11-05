@@ -16,7 +16,8 @@ import { CubeFrame } from "@/components/cube/CubeFrame";
 import { TwistyCube, type CubeSpec } from "@/components/cube/TwistyCube";
 import { heartsTooltip } from "@/components/shell/StatsPills";
 import { MODULE_COLORS } from "./colors";
-import { HowItWorks, TodayPanel } from "./TodayPanel";
+import { HowItWorks } from "./HowItWorks";
+import { TodayPanel } from "./TodayPanel";
 import { ModuleList, type NodeState } from "./TrailMap";
 
 const AVAILABLE = ALL_LESSONS.filter((l) => !l.comingSoon);
@@ -107,7 +108,7 @@ function Hero({ lesson, module, anyCompleted }: { lesson?: Lesson; module?: Modu
           <Button size="lg">{anyCompleted ? "Continuar lição" : "Começar a primeira lição"}</Button>
         </Link>
         <p className="mt-4 text-sm text-muted">
-          <a href="#trilha" className="text-text underline underline-offset-2">
+          <a href="#trilha" className="-my-2 inline-block py-2 text-text underline underline-offset-2">
             Ver trilha completa
           </a>
         </p>

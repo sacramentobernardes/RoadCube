@@ -58,7 +58,7 @@ export function Profile() {
                 {profile?.name ?? "Cubista anônimo"}
                 <span className="text-cube-red">.</span>
               </span>
-              <button type="button" aria-label="Editar nome" onClick={() => setEditing(true)} className="text-muted hover:text-text">
+              <button type="button" aria-label="Editar nome" onClick={() => setEditing(true)} className="-m-1.5 p-1.5 text-muted hover:text-text">
                 <Pencil className="size-4" />
               </button>
             </h1>

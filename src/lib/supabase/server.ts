@@ -6,8 +6,9 @@ import { supabaseEnv } from "./env";
 /** Crie um cliente por requisição: ele carrega os cookies do usuário atual. */
 export async function createClient() {
   const cookieStore = await cookies();
-  const { url, key } = supabaseEnv();
+  const { url, key, cookieOptions } = supabaseEnv();
   return createServerClient(url, key, {
+    cookieOptions,
     cookies: {
       getAll: () => cookieStore.getAll(),
       setAll(cookiesToSet) {

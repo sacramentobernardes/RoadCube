@@ -142,7 +142,7 @@ function LessonSession({ lessonId }: { lessonId: string }) {
     <div className="flex min-h-dvh flex-col">
       <header className="border-b border-border">
         <div className="page-width flex h-14 items-center gap-5">
-          <Link href="/" aria-label="Sair da lição" className="text-muted transition hover:text-text">
+          <Link href="/" aria-label="Sair da lição" className="-m-2 p-2 text-muted transition hover:text-text">
             <X className="size-5" />
           </Link>
           <span className="hidden truncate font-mono text-xs text-muted sm:block">
