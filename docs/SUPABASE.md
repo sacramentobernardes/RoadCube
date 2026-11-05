@@ -7,6 +7,21 @@ O app não roda sem estes passos: toda página exige login, e o login depende do
 1. Crie uma conta em [supabase.com](https://supabase.com) e clique em **New project**.
 2. Escolha a região **South America (São Paulo)** e guarde a senha do banco.
 
+## Modelos de e-mail
+
+Editar os modelos exige SMTP próprio. Em **Authentication → Emails**, cole em **Source** o conteúdo de cada arquivo de [`supabase/email-templates/`](../supabase/email-templates/) e use o assunto indicado:
+
+| Modelo | Arquivo | Assunto |
+|---|---|---|
+| Confirm signup | `confirm-signup.html` | Confirme seu e-mail no RoadCube |
+| Reset password | `reset-password.html` | Crie uma nova senha no RoadCube |
+| Magic link | `magic-link.html` | Seu link de acesso ao RoadCube |
+| Change email address | `change-email.html` | Confirme seu novo e-mail no RoadCube |
+| Invite user | `invite-user.html` | Você foi convidado para o RoadCube |
+| Reauthentication | `reauthentication.html` | Seu código de confirmação do RoadCube |
+
+Os dois primeiros apontam para `/auth/confirm`, que funciona em qualquer navegador, inclusive dentro do app do Gmail.
+
 ## 2. Criar as tabelas
 
 No painel, abra **SQL Editor** → **New query** e rode cada arquivo uma vez, nesta ordem:

@@ -36,7 +36,7 @@ export function ForgotPasswordForm() {
     return (
       <Heading kicker="Verifique seu e-mail" title="Link enviado">
         Se <span className="text-text">{state.confirmEmail}</span> tiver uma conta, você vai receber um link para criar uma
-        nova senha. Abra-o neste mesmo navegador.
+        nova senha.
       </Heading>
     );
   }

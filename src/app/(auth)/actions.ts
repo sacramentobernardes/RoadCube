@@ -96,6 +96,18 @@ export async function requestPasswordReset(_prev: AuthState, form: FormData): Pr
   return { confirmEmail: email };
 }
 
+/** Usa o token do link de e-mail. Funciona em qualquer navegador, sem depender do PKCE. */
+export async function confirmLink(form: FormData) {
+  const tokenHash = field(form, "token_hash");
+  const type = field(form, "type");
+  if (!tokenHash || (type !== "recovery" && type !== "email")) redirect("/login?error=link");
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
+  if (error) redirect("/login?error=link");
+  redirect(type === "recovery" ? "/reset-password" : "/");
+}
+
 export async function updatePassword(_prev: AuthState, form: FormData): Promise<AuthState> {
   await requireUser();
   const password = String(form.get("password") ?? "");

@@ -12,6 +12,7 @@ const GOOGLE_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true";
 const NOTICES: Record<string, string> = {
   callback: "Não foi possível concluir o acesso. Se você acabou de confirmar o e-mail, tente entrar.",
   google: "Não foi possível entrar com o Google. Tente de novo.",
+  link: "Este link expirou ou já foi usado. Peça um novo em Esqueci minha senha.",
 };
 
 export function Field({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
@@ -39,8 +40,7 @@ export function AuthForm({ mode, next, notice }: { mode: "login" | "signup"; nex
         </Kicker>
         <h1 className="text-4xl font-bold tracking-[-0.04em]">Confirme seu e-mail.</h1>
         <p className="text-lg text-muted">
-          Enviamos um link para <span className="text-text">{state.confirmEmail}</span>. Abra-o neste mesmo navegador para
-          começar.
+          Enviamos um link para <span className="text-text">{state.confirmEmail}</span>. Abra-o para começar.
         </p>
       </div>
     );
