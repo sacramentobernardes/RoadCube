@@ -1,4 +1,4 @@
-import { LazyCube } from "@/components/cube/LazyCube";
+import { QueuedCube } from "@/components/cube/QueuedCube";
 import { Kicker } from "@/components/ui/Kicker";
 import { GUIDE_SECTIONS, type GuideEntry } from "@/data/guide";
 import { cn } from "@/lib/cn";
@@ -11,7 +11,7 @@ function Entry({ entry }: { entry: GuideEntry }) {
     <li className="flex gap-5 border-b border-border py-5">
       {entry.cube && (
         <div className="w-24 shrink-0 self-start rounded-md bg-frame p-1.5 sm:w-28">
-          <LazyCube {...entry.cube} />
+          <QueuedCube {...entry.cube} />
         </div>
       )}
       <div className="min-w-0 flex-1">
