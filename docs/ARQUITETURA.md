@@ -14,7 +14,7 @@ Avatar e preferências ficam em `profiles.settings` (jsonb): a foto é reduzida 
 
 `/` mostra duas páginas no mesmo endereço: o proxy reescreve para `/inicio` (`components/landing`) quem não tem sessão, e quem está logado vê a trilha. Com o Supabase fora do ar, o proxy não trata a pessoa como anônima e `app/error.tsx` assume.
 
-A CSP é gerada por requisição em `lib/csp.ts`, com nonce, ainda em modo de relatório. Os demais cabeçalhos de segurança ficam em `next.config.ts`.
+A CSP é gerada por requisição em `lib/csp.ts`, com nonce. Os demais cabeçalhos de segurança ficam em `next.config.ts`.
 
 ## Visão geral
 

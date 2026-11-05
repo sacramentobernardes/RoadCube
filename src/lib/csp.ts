@@ -1,6 +1,4 @@
-// Em modo de relatório, a política só registra violações no console. Depois de
-// conferir o site em produção sem avisos, troque para "Content-Security-Policy".
-export const CSP_HEADER = "Content-Security-Policy-Report-Only";
+export const CSP_HEADER = "Content-Security-Policy";
 
 export function contentSecurityPolicy(nonce: string, supabaseUrl: string) {
   const dev = process.env.NODE_ENV === "development";
