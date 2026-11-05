@@ -135,11 +135,16 @@ export function Landing() {
       </main>
 
       <footer className="border-t border-border">
-        <div className="page-width flex h-14 items-center justify-between text-sm text-muted">
+        <div className="page-width flex h-14 items-center justify-between gap-4 text-sm text-muted">
           <span>RoadCube</span>
-          <Link href="/login" className="py-2 hover:text-text">
-            Entrar
-          </Link>
+          <nav aria-label="Documentos" className="flex gap-5">
+            <Link href="/privacidade" className="py-2 hover:text-text">
+              Privacidade
+            </Link>
+            <Link href="/termos" className="py-2 hover:text-text">
+              Termos
+            </Link>
+          </nav>
         </div>
       </footer>
     </div>

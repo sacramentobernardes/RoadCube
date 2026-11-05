@@ -245,6 +245,16 @@ export function SettingsPanel() {
             Excluir
           </Button>
         </Row>
+        <Row title="Documentos" detail="Como o RoadCube trata seus dados e as regras de uso.">
+          <div className="flex gap-4 text-sm">
+            <Link href="/privacidade" className="py-2 underline underline-offset-2">
+              Privacidade
+            </Link>
+            <Link href="/termos" className="py-2 underline underline-offset-2">
+              Termos
+            </Link>
+          </div>
+        </Row>
       </Group>
     </div>
   );

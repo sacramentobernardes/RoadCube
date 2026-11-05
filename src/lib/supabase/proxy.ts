@@ -7,6 +7,7 @@ import { supabaseEnv } from "./env";
 
 const AUTH_PAGES = ["/login", "/signup", "/forgot-password"];
 const LANDING = "/inicio";
+const LEGAL_PAGES = ["/privacidade", "/termos"];
 
 const matches = (pathname: string, base: string) => pathname === base || pathname.startsWith(`${base}/`);
 
@@ -59,7 +60,7 @@ export async function updateSession(request: NextRequest) {
   const redirectTo = (target: URL) => keepSession(NextResponse.redirect(target));
 
   const isAuthPage = AUTH_PAGES.some((page) => matches(pathname, page));
-  const isPublic = isAuthPage || matches(pathname, "/auth");
+  const isPublic = isAuthPage || matches(pathname, "/auth") || LEGAL_PAGES.includes(pathname);
 
   if (pathname === LANDING) return redirectTo(new URL("/", request.url));
 

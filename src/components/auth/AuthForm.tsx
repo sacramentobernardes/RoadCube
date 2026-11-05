@@ -98,6 +98,20 @@ export function AuthForm({ mode, next, notice }: { mode: "login" | "signup"; nex
         </form>
       )}
 
+      {!isLogin && (
+        <p className="text-sm leading-relaxed text-muted">
+          Ao criar a conta, você confirma ter 13 anos ou mais, com autorização de um responsável se tiver menos de 18, e aceita os{" "}
+          <Link href="/termos" className="text-text underline underline-offset-2">
+            Termos de Uso
+          </Link>{" "}
+          e a{" "}
+          <Link href="/privacidade" className="text-text underline underline-offset-2">
+            Política de Privacidade
+          </Link>
+          .
+        </p>
+      )}
+
       <p className="text-sm text-muted">
         {isLogin ? "Ainda não tem conta? " : "Já tem conta? "}
         <Link href={otherHref} className="text-text underline underline-offset-2">
