@@ -45,8 +45,7 @@ interface ObjectLike {
 
 const themed = new WeakSet<MaterialLike>();
 
-export async function applyCubeTheme(player: TwistyPlayer) {
-  const root = (await player.experimentalCurrentThreeJSPuzzleObject()) as unknown as ObjectLike;
+function recolor(root: ObjectLike) {
   root.traverse((obj) => {
     const materials = Array.isArray(obj.material) ? obj.material : obj.material ? [obj.material] : [];
     for (const m of materials) {
@@ -57,4 +56,11 @@ export async function applyCubeTheme(player: TwistyPlayer) {
       themed.add(m);
     }
   });
+}
+
+export async function applyCubeTheme(player: TwistyPlayer) {
+  // Os materiais esmaecidos só entram no cubo quando a máscara é aplicada, o que
+  // pode vir depois. Por isso a recoloração se repete a cada render agendado.
+  const root: ObjectLike = (await player.experimentalCurrentThreeJSPuzzleObject(() => recolor(root))) as unknown as ObjectLike;
+  recolor(root);
 }

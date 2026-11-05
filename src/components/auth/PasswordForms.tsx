@@ -47,7 +47,7 @@ export function ForgotPasswordForm() {
         Informe seu e-mail e enviaremos um link para criar uma nova.
       </Heading>
       <form action={action} className="flex flex-col gap-4">
-        <Field label="E-mail" name="email" type="email" autoComplete="email" placeholder="voce@email.com" />
+        <Field label="E-mail" name="email" type="email" defaultValue={state.email} autoComplete="email" placeholder="voce@email.com" />
         <ErrorText>{state.error}</ErrorText>
         <Button size="lg" type="submit" disabled={pending}>
           {pending ? "Aguarde..." : "Enviar link"}

@@ -64,8 +64,8 @@ export function AuthForm({ mode, next, notice }: { mode: "login" | "signup"; nex
 
       <form action={action} className="flex flex-col gap-4">
         <input type="hidden" name="next" value={next ?? ""} />
-        {!isLogin && <Field label="Nome" name="name" autoComplete="name" maxLength={30} placeholder="Como podemos te chamar?" />}
-        <Field label="E-mail" name="email" type="email" autoComplete="email" placeholder="voce@email.com" />
+        {!isLogin && <Field label="Nome" name="name" defaultValue={state.name} autoComplete="name" maxLength={30} placeholder="Como podemos te chamar?" />}
+        <Field label="E-mail" name="email" type="email" defaultValue={state.email} autoComplete="email" placeholder="voce@email.com" />
         <Field
           label="Senha"
           name="password"

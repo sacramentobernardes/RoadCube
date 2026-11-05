@@ -8,6 +8,9 @@ import { createClient } from "@/lib/supabase/server";
 
 export interface AuthState {
   error?: string;
+  /** O que a pessoa digitou, para o formulário não voltar vazio depois de um erro. */
+  name?: string;
+  email?: string;
   /** Cadastro feito; falta confirmar o e-mail informado. */
   confirmEmail?: string;
 }
@@ -36,11 +39,11 @@ async function siteUrl() {
 export async function login(_prev: AuthState, form: FormData): Promise<AuthState> {
   const email = field(form, "email");
   const password = String(form.get("password") ?? "");
-  if (!EMAIL.test(email) || !password) return { error: "Informe seu e-mail e sua senha." };
+  if (!EMAIL.test(email) || !password) return { error: "Informe seu e-mail e sua senha.", email };
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: messageFor(error.code) };
+  if (error) return { error: messageFor(error.code), email };
   redirect(safeNext(form.get("next")));
 }
 
@@ -48,9 +51,9 @@ export async function signup(_prev: AuthState, form: FormData): Promise<AuthStat
   const name = field(form, "name").slice(0, 30);
   const email = field(form, "email");
   const password = String(form.get("password") ?? "");
-  if (!name) return { error: "Como podemos te chamar?" };
-  if (!EMAIL.test(email)) return { error: "Informe um e-mail válido." };
-  if (password.length < MIN_PASSWORD) return { error: `A senha precisa ter pelo menos ${MIN_PASSWORD} caracteres.` };
+  if (!name) return { error: "Como podemos te chamar?", email };
+  if (!EMAIL.test(email)) return { error: "Informe um e-mail válido.", name, email };
+  if (password.length < MIN_PASSWORD) return { error: `A senha precisa ter pelo menos ${MIN_PASSWORD} caracteres.`, name, email };
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
@@ -58,7 +61,7 @@ export async function signup(_prev: AuthState, form: FormData): Promise<AuthStat
     password,
     options: { data: { name }, emailRedirectTo: `${await siteUrl()}/auth/callback` },
   });
-  if (error) return { error: messageFor(error.code) };
+  if (error) return { error: messageFor(error.code), name, email };
 
   // Sem sessão, o projeto exige confirmação. A resposta é a mesma para e-mails
   // já cadastrados, para não revelar quem tem conta.
@@ -85,13 +88,13 @@ export async function logout() {
 
 export async function requestPasswordReset(_prev: AuthState, form: FormData): Promise<AuthState> {
   const email = field(form, "email");
-  if (!EMAIL.test(email)) return { error: "Informe um e-mail válido." };
+  if (!EMAIL.test(email)) return { error: "Informe um e-mail válido.", email };
 
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${await siteUrl()}/auth/callback?next=/reset-password`,
   });
-  if (error?.code?.includes("rate_limit")) return { error: messageFor(error.code) };
+  if (error?.code?.includes("rate_limit")) return { error: messageFor(error.code), email };
   // A resposta é a mesma com ou sem conta, para não revelar quem está cadastrado.
   return { confirmEmail: email };
 }
