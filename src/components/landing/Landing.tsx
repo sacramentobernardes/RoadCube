@@ -4,7 +4,7 @@ import { ALL_LESSONS, CURRICULUM } from "@/data/curriculum";
 import { MODULE_COLORS } from "@/components/trail/colors";
 import { HowItWorks } from "@/components/trail/HowItWorks";
 import { CubeFrame } from "@/components/cube/CubeFrame";
-import { TwistyCube } from "@/components/cube/TwistyCube";
+import { DeferredCube } from "@/components/cube/DeferredCube";
 import { Logo } from "@/components/shell/Logo";
 import { ThemeToggle } from "@/components/shell/ThemeToggle";
 import { Kicker } from "@/components/ui/Kicker";
@@ -66,7 +66,7 @@ export function Landing() {
             </div>
           </div>
           <CubeFrame title="sune.alg" footerLeft={<Tag tone="dark">em loop</Tag>}>
-            <TwistyCube alg="R U R' U R U2 R'" anchor="end" view="oll" autoplay loop />
+            <DeferredCube alg="R U R' U R U2 R'" anchor="end" view="oll" autoplay loop />
           </CubeFrame>
         </section>
 

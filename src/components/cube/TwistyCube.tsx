@@ -34,10 +34,12 @@ export interface TwistyCubeHandle {
 
 interface Props extends CubeSpec {
   className?: string;
+  /** Chamado quando o cubo já está pronto para aparecer. */
+  onReady?: () => void;
 }
 
 export const TwistyCube = forwardRef<TwistyCubeHandle, Props>(function TwistyCube(
-  { alg = "", setup = "", anchor = "start", view = "full", autoplay, loop, controls, tempo = 1, className },
+  { alg = "", setup = "", anchor = "start", view = "full", autoplay, loop, controls, tempo = 1, className, onReady },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -46,6 +48,11 @@ export const TwistyCube = forwardRef<TwistyCubeHandle, Props>(function TwistyCub
   const [themed, setThemed] = useState(false);
   const [playing, setPlaying] = useState(false);
   const speed = useRoadCube((s) => s.settings.animationSpeed);
+  const readyCallback = useRef(onReady);
+
+  useEffect(() => {
+    readyCallback.current = onReady;
+  }, [onReady]);
 
   useImperativeHandle(ref, () => ({
     play: () => playerRef.current?.play(),
@@ -74,7 +81,11 @@ export const TwistyCube = forwardRef<TwistyCubeHandle, Props>(function TwistyCub
       playerRef.current = player;
       player.experimentalModel.coarseTimelineInfo.addFreshListener((info) => setPlaying(info.playing));
       setReady(true);
-      applyCubeTheme(player).then(() => !cancelled && setThemed(true));
+      applyCubeTheme(player).then(() => {
+        if (cancelled) return;
+        setThemed(true);
+        readyCallback.current?.();
+      });
     });
     return () => {
       cancelled = true;

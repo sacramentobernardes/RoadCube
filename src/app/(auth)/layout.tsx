@@ -1,7 +1,7 @@
 import { Logo } from "@/components/shell/Logo";
 import { ThemeToggle } from "@/components/shell/ThemeToggle";
 import { CubeFrame } from "@/components/cube/CubeFrame";
-import { TwistyCube } from "@/components/cube/TwistyCube";
+import { DeferredCube } from "@/components/cube/DeferredCube";
 import { Tag } from "@/components/ui/Tag";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
@@ -17,7 +17,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="w-full max-w-md justify-self-center">{children}</div>
         <div className="hidden md:block">
           <CubeFrame title="sune.alg" footerLeft={<Tag tone="dark">em loop</Tag>}>
-            <TwistyCube alg="R U R' U R U2 R'" anchor="end" view="oll" autoplay loop />
+            <DeferredCube alg="R U R' U R U2 R'" anchor="end" view="oll" autoplay loop />
           </CubeFrame>
         </div>
       </main>
