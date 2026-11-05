@@ -5,7 +5,7 @@
 
 export type AlgSet = "beginner" | "f2l" | "oll" | "pll";
 
-export type CubeView = "full" | "cross" | "f2l" | "oll" | "pll" | "ll";
+export type CubeView = "full" | "cross" | "f2l" | "oll" | "pll" | "ll" | "centers" | "edges" | "corners";
 
 /**
  * O que o algoritmo precisa manter intacto para ser válido (usado na verificação):

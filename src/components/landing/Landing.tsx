@@ -38,6 +38,9 @@ export function Landing() {
         <div className="page-width flex h-14 items-center justify-between gap-4">
           <Logo />
           <div className="flex items-center gap-4">
+            <Link href="/guia" className="py-2 text-sm font-semibold hover:underline">
+              Guia
+            </Link>
             <ThemeToggle />
             <Link href="/login" className="py-2 text-sm font-semibold hover:underline">
               Entrar
@@ -137,7 +140,10 @@ export function Landing() {
       <footer className="border-t border-border">
         <div className="page-width flex h-14 items-center justify-between gap-4 text-sm text-muted">
           <span>RoadCube</span>
-          <nav aria-label="Documentos" className="flex gap-5">
+          <nav aria-label="Links" className="flex gap-5">
+            <Link href="/guia" className="py-2 hover:text-text">
+              Guia
+            </Link>
             <Link href="/privacidade" className="py-2 hover:text-text">
               Privacidade
             </Link>

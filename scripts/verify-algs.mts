@@ -4,6 +4,7 @@ import { cube3x3x3 } from "cubing/puzzles";
 import { Alg } from "cubing/alg";
 import type { KPattern } from "cubing/kpuzzle";
 import { ALG_CASES, type PreserveRule } from "../src/data/algorithms.ts";
+import { GUIDE_SECTIONS } from "../src/data/guide.ts";
 
 // Índices das peças no kpuzzle 3x3x3 do cubing.js.
 // EDGES:   UF UR UB UL DF DR DB DL FR FL BR BL
@@ -187,6 +188,16 @@ function checkCoverage(label: string, expected: number, cases: typeof ALG_CASES,
 
 checkCoverage("OLL", 57, ALG_CASES.filter((c) => c.set === "oll"), ollKey);
 checkCoverage("F2L", 41, ALG_CASES.filter((c) => c.preserve === "cross-but-fr"), pairKey);
+
+// As sequências animadas do Guia precisam ser válidas.
+for (const entry of GUIDE_SECTIONS.flatMap((s) => s.entries)) {
+  try {
+    if (entry.cube?.alg) solved.applyAlg(entry.cube.alg);
+  } catch {
+    failures++;
+    console.log(`✗ Guia: sequência inválida em "${entry.term}"`);
+  }
+}
 
 const total = ALG_CASES.reduce((n, c) => n + c.algs.length, 0);
 console.log(`\n${total - failures}/${total} verificações OK`);

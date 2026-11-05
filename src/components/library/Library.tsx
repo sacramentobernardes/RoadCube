@@ -16,6 +16,9 @@ import { Kicker } from "@/components/ui/Kicker";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Tabs } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
+import { Guide } from "@/components/guide/Guide";
+
+type LibraryTab = AlgSet | "guide";
 
 const SETS: AlgSet[] = ["beginner", "f2l", "oll", "pll"];
 const SET_COLORS: Record<AlgSet, string> = {
@@ -26,7 +29,7 @@ const SET_COLORS: Record<AlgSet, string> = {
 };
 
 export function Library() {
-  const [set, setSet] = useState<AlgSet>("pll");
+  const [set, setSet] = useState<LibraryTab>("guide");
   const [query, setQuery] = useState("");
   const [viewing, setViewing] = useState<{ c: AlgCase; alg: string } | null>(null);
 
@@ -39,30 +42,38 @@ export function Library() {
   return (
     <div>
       <PageHeader
-        kicker={`Biblioteca · ${ALG_CASES.length} casos`}
-        title="Todos os algoritmos"
-        description="Referência rápida com animação. Marque com a estrela o algoritmo que você prefere: ele passa a ser usado no treino e na revisão."
+        kicker={set === "guide" ? "Biblioteca · Guia" : `Biblioteca · ${ALG_CASES.length} casos`}
+        title={set === "guide" ? "Guia do cubo" : "Todos os algoritmos"}
+        description={
+          set === "guide"
+            ? "As peças, a notação dos movimentos, como ler um algoritmo e aplicar um scramble."
+            : "Referência rápida com animação. Marque com a estrela o algoritmo que você prefere: ele passa a ser usado no treino e na revisão."
+        }
       />
 
       <div className="mb-2 flex flex-col-reverse gap-4 sm:flex-row sm:items-end sm:justify-between">
         <Tabs
           value={set}
           onChange={setSet}
-          items={SETS.map((s) => ({ value: s, label: ALG_SET_LABELS[s] }))}
+          items={[{ value: "guide" as const, label: "Guia" }, ...SETS.map((s) => ({ value: s, label: ALG_SET_LABELS[s] }))]}
           className="flex-1"
         />
-        <label className="flex h-10 items-center gap-2 border-b border-border sm:w-56">
-          <Search className="size-4 text-muted" />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar caso"
-            className="h-full min-w-0 flex-1 bg-transparent text-[15px] outline-none"
-          />
-        </label>
+        {set !== "guide" && (
+          <label className="flex h-10 items-center gap-2 border-b border-border sm:w-56">
+            <Search className="size-4 text-muted" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar caso"
+              className="h-full min-w-0 flex-1 bg-transparent text-[15px] outline-none"
+            />
+          </label>
+        )}
       </div>
 
-      {groups.map((group) => (
+      {set === "guide" && <Guide />}
+
+      {set !== "guide" && groups.map((group) => (
         <section key={group} className="grid grid-cols-[minmax(0,1fr)] gap-4 border-b border-border py-10 md:grid-cols-[220px_minmax(0,1fr)] md:gap-12">
           <div className="md:sticky md:top-24 md:self-start">
             <Kicker color={SET_COLORS[set]}>{ALG_SET_LABELS[set]}</Kicker>
@@ -78,7 +89,7 @@ export function Library() {
           </ul>
         </section>
       ))}
-      {cases.length === 0 && <p className="py-10 text-muted">Nenhum caso encontrado.</p>}
+      {set !== "guide" && cases.length === 0 && <p className="py-10 text-muted">Nenhum caso encontrado.</p>}
 
       <AnimatePresence>
         {viewing && (

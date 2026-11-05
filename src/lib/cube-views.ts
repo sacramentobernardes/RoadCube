@@ -36,4 +36,7 @@ export const CUBE_VIEWS: Record<CubeView, ViewConfig> = {
     setup: "z2",
     mask: "EDGES:DDDD----DDDD,CORNERS:DDDD----,CENTERS:DDDDD-",
   },
+  centers: { setup: "", mask: "EDGES:IIIIIIIIIIII,CORNERS:IIIIIIII,CENTERS:------" },
+  edges: { setup: "", mask: "EDGES:------------,CORNERS:IIIIIIII,CENTERS:IIIIII" },
+  corners: { setup: "", mask: "EDGES:IIIIIIIIIIII,CORNERS:--------,CENTERS:IIIIII" },
 };
