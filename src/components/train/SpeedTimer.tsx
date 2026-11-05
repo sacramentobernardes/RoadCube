@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { formatTime } from "@/lib/dates";
+import { useRoadCube } from "@/lib/store";
 import { useStopwatch } from "@/lib/use-stopwatch";
 import { cn } from "@/lib/cn";
 
@@ -15,6 +16,7 @@ type Phase = "idle" | "holding" | "ready" | "running";
  */
 export function SpeedTimer({ onSolve, disabled }: { onSolve: (ms: number) => void; disabled?: boolean }) {
   const { elapsed, start, stop } = useStopwatch();
+  const hideTimer = useRoadCube((s) => s.settings.hideTimer);
   const [phase, setPhaseState] = useState<Phase>("idle");
   const holdTimer = useRef<number | undefined>(undefined);
   const phaseRef = useRef<Phase>("idle");
@@ -90,7 +92,7 @@ export function SpeedTimer({ onSolve, disabled }: { onSolve: (ms: number) => voi
           phase === "ready" && "text-cube-green",
         )}
       >
-        {formatTime(elapsed)}
+        {phase === "running" && hideTimer ? "···" : formatTime(elapsed)}
       </div>
       <p className="mt-4 font-mono text-xs tracking-wide text-muted uppercase">
         {phase === "running"

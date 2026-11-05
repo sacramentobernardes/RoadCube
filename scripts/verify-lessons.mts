@@ -8,8 +8,8 @@ const soon = new Set([...curriculum.matchAll(/id: "(m\d-[\w-]+)",(?:(?!\n {6}\},
 const app = [...curriculum.matchAll(/(?:id: |algLesson\(\s*)"(m\d-[\w-]+)"/g)].map((m) => m[1]).filter((id) => !soon.has(id));
 
 const sql = readdirSync("supabase/migrations").map((f) => readFileSync(`supabase/migrations/${f}`, "utf8")).join("\n");
-const block = sql.slice(sql.indexOf("insert into public.lessons"));
-const db = [...block.slice(0, block.indexOf(";")).matchAll(/\('(m\d-[\w-]+)', (\d+)\)/g)]
+const inserts = [...sql.matchAll(/insert into public\.lessons[^;]*;/g)].map((m) => m[0]).join("\n");
+const db = [...inserts.matchAll(/\('(m\d-[\w-]+)', (\d+)\)/g)]
   .sort((a, b) => Number(a[2]) - Number(b[2]))
   .map((m) => m[1]);
 

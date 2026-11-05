@@ -8,6 +8,7 @@ import { useRoadCube } from "@/lib/store";
 import { useDueCount } from "@/lib/use-due-count";
 import { cn } from "@/lib/cn";
 import { Logo } from "./Logo";
+import { Avatar } from "./Avatar";
 import { StatsPills } from "./StatsPills";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -29,6 +30,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const syncFailed = useRoadCube((s) => s.syncStatus === "error");
   const syncHearts = useRoadCube((s) => s.syncHearts);
   const name = useRoadCube((s) => s.profile?.name);
+  const avatar = useRoadCube((s) => s.settings.avatar);
   const due = useDueCount();
 
   useEffect(() => {
@@ -68,15 +70,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
             {hydrated && <StatsPills />}
             <ThemeToggle />
-            <Link
-              href="/profile"
-              aria-label="Perfil"
-              className={cn(
-                "hidden size-8 place-items-center rounded-full border border-border text-sm font-semibold md:grid",
-                isActive(pathname, "/profile") && "border-ink",
-              )}
-            >
-              {hydrated && name ? name.slice(0, 1).toUpperCase() : <User className="size-4" />}
+            <Link href="/profile" aria-label="Perfil" className="hidden md:block">
+              <Avatar
+                value={hydrated ? avatar : null}
+                name={hydrated ? name : undefined}
+                className={cn("size-8 text-sm", isActive(pathname, "/profile") && "border-ink")}
+              />
             </Link>
           </div>
         </div>

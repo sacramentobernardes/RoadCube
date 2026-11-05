@@ -13,6 +13,7 @@ No painel, abra **SQL Editor** → **New query** e rode cada arquivo uma vez, ne
 
 1. [`supabase/migrations/0001_init.sql`](../supabase/migrations/0001_init.sql)
 2. [`supabase/migrations/0002_server_game_logic.sql`](../supabase/migrations/0002_server_game_logic.sql)
+3. [`supabase/migrations/0003_full_cases.sql`](../supabase/migrations/0003_full_cases.sql)
 
 ## 3. Configurar as chaves
 

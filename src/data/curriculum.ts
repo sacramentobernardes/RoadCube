@@ -24,9 +24,15 @@ export interface Module {
   id: string;
   title: string;
   subtitle: string;
+  /** O que a pessoa aprende neste módulo. */
+  about: string;
   color: ModuleColor;
   lessons: Lesson[];
 }
+
+const f2lCases = (from: number, to: number) =>
+  Array.from({ length: to - from + 1 }, (_, i) => `f2l-case-${from + i}`);
+const ollCases = (...numbers: number[]) => numbers.map((n) => `oll-${n}`);
 
 function algLesson(id: string, title: string, description: string, caseIds: string[], intro: Exercise[] = []): Lesson {
   return { id, title, description, caseIds, exercises: algorithmLessonExercises(caseIds, intro) };
@@ -40,6 +46,7 @@ export const CURRICULUM: Module[] = [
     id: "m1",
     title: "Fundamentos & Notação",
     subtitle: "Conheça as peças e aprenda a ler algoritmos",
+    about: "As peças do cubo e a notação WCA, a linguagem usada em todos os algoritmos deste curso.",
     color: "green",
     lessons: [
       {
@@ -209,6 +216,7 @@ export const CURRICULUM: Module[] = [
     id: "m2",
     title: "Método Básico",
     subtitle: "Resolva o cubo inteiro, camada por camada",
+    about: "O método em camadas, da cruz branca à última camada. Ao final, você resolve o cubo sozinho.",
     color: "blue",
     lessons: [
       {
@@ -357,6 +365,7 @@ export const CURRICULUM: Module[] = [
     id: "m3",
     title: "CFOP: Cross & F2L",
     subtitle: "A transição para o método avançado (Fridrich)",
+    about: "O início do CFOP: a cruz planejada na inspeção e os pares de quina e meio, que substituem as duas primeiras camadas.",
     color: "orange",
     lessons: [
       {
@@ -414,6 +423,7 @@ export const CURRICULUM: Module[] = [
     id: "m4",
     title: "OLL",
     subtitle: "Orientação da última camada",
+    about: "Deixe a face de cima de uma cor só em duas etapas, com 10 algoritmos.",
     color: "yellow",
     lessons: [
       algLesson("m4-eo", "2-Look OLL: Arestas", "Linha, L e Ponto", ["oll-edge-line", "oll-edge-l", "oll-edge-dot"], [
@@ -433,14 +443,6 @@ export const CURRICULUM: Module[] = [
         "oll-chameleon",
         "oll-bowtie",
       ]),
-      {
-        id: "m4-full",
-        title: "Full OLL",
-        description: "Os 57 casos por padrão visual",
-        caseIds: [],
-        exercises: [],
-        comingSoon: true,
-      },
     ],
   },
 
@@ -449,6 +451,7 @@ export const CURRICULUM: Module[] = [
     id: "m5",
     title: "PLL",
     subtitle: "Permutação da última camada",
+    about: "Coloque cada peça no lugar final: do método em duas etapas às 21 PLLs, reconhecendo os casos por dois lados.",
     color: "red",
     lessons: [
       algLesson("m5-cp", "2-Look PLL: Quinas", "T e Y", ["pll-t", "pll-y"], [
@@ -473,6 +476,43 @@ export const CURRICULUM: Module[] = [
         "pll-gc",
         "pll-gd",
       ]),
+    ],
+  },
+
+  // ───────────────────────── Módulo 6 ─────────────────────────
+  {
+    id: "m6",
+    title: "F2L e OLL Completos",
+    subtitle: "Todos os casos, para ganhar velocidade",
+    about: "Os 41 casos de F2L e os 57 de OLL. Aqui estão os casos que ainda faltam, agrupados pelo padrão que você vê no cubo.",
+    color: "green",
+    lessons: [
+      algLesson("m6-f2l-up", "F2L: Branco para Cima", "Quina com o branco virado para cima", f2lCases(9, 14), [
+        theory("F2L completo", [
+          "Você já junta pares de forma intuitiva. Agora vai conhecer um caminho curto para cada um dos 41 casos.",
+          "Todos os algoritmos deste módulo usam o slot da frente-direita e não precisam girar o cubo.",
+        ]),
+      ]),
+      algLesson("m6-f2l-top-1", "F2L: Quina e Meio em Cima I", "Quina de lado, meio na camada de cima", f2lCases(15, 19)),
+      algLesson("m6-f2l-top-2", "F2L: Quina e Meio em Cima II", "Os outros casos com as duas peças em cima", f2lCases(20, 24)),
+      algLesson("m6-f2l-edge-slot", "F2L: Meio no Slot", "Quina em cima, meio já no slot", f2lCases(25, 30)),
+      algLesson("m6-f2l-corner-slot", "F2L: Quina no Slot", "Meio em cima, quina já no slot", f2lCases(31, 36)),
+      algLesson("m6-f2l-both-slot", "F2L: Quina e Meio no Slot", "As duas peças presas no slot", f2lCases(37, 41)),
+      algLesson("m6-oll-dot-1", "Full OLL: Ponto I", "Nenhuma aresta orientada", ollCases(1, 2, 3, 4), [
+        theory("Full OLL", [
+          "O Full OLL orienta a última camada de uma vez, em vez de duas. São 57 casos, e você já conhece 7 deles do 2-Look.",
+          "Reconheça primeiro a forma amarela em cima. Depois, conte os amarelos nas laterais para separar casos parecidos.",
+        ]),
+      ]),
+      algLesson("m6-oll-dot-2", "Full OLL: Ponto II", "Ponto com quinas em cima", ollCases(17, 18, 19, 20)),
+      algLesson("m6-oll-square", "Full OLL: Quadrado e Raio", "Blocos e formas em raio", ollCases(5, 6, 7, 8, 11, 12)),
+      algLesson("m6-oll-fish", "Full OLL: Peixe", "Quatro formas de peixe", ollCases(9, 10, 35, 37)),
+      algLesson("m6-oll-knight", "Full OLL: Cavaleiro", "Formas em L do cavalo do xadrez", ollCases(13, 14, 15, 16)),
+      algLesson("m6-oll-line", "Full OLL: Linha e Quinas Prontas", "Linhas e arestas por orientar", ollCases(51, 52, 55, 56, 28, 57)),
+      algLesson("m6-oll-p", "Full OLL: P", "Formas de letra P", ollCases(31, 32, 43, 44)),
+      algLesson("m6-oll-ctw", "Full OLL: C, T e W", "Três formas de letra", ollCases(34, 46, 33, 45, 36, 38)),
+      algLesson("m6-oll-l", "Full OLL: L", "Formas de L", ollCases(47, 48, 49, 50, 53, 54)),
+      algLesson("m6-oll-awkward", "Full OLL: Awkward e Raio Grande", "Os últimos casos", ollCases(29, 30, 41, 42, 39, 40)),
     ],
   },
 ];

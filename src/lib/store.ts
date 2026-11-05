@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { addDays, dayKey } from "./dates";
 import { DAILY_GOAL_XP, MAX_HEARTS, XP, cappedXp, lessonXp, regenerateHearts } from "./gamification";
 import { newCard, reviewCard, type Grade } from "./srs";
-import { HISTORY_LIMIT, SOLVES_LIMIT, type Solve, type GameEvent, type Settings, type Streak, type UserData } from "./user-data";
+import { DEFAULT_SETTINGS, HISTORY_LIMIT, SOLVES_LIMIT, type Solve, type GameEvent, type Settings, type Streak, type UserData } from "./user-data";
 
 export type { LessonHistoryEntry, LessonRecord, Profile, Solve } from "./user-data";
 
@@ -37,6 +37,7 @@ interface RoadCubeState extends UserData {
   toggleDnf(id: string): void;
   setPreferredAlg(caseId: string, index: number): void;
   updateSettings(patch: Partial<Settings>): void;
+  setDailyGoal(xp: number): void;
   resetProgress(): void;
 }
 
@@ -53,7 +54,7 @@ const emptyUserData: UserData = {
   srs: {},
   solves: [],
   preferredAlg: {},
-  settings: { sound: true, animationSpeed: 1 },
+  settings: DEFAULT_SETTINGS,
 };
 
 export const DATA_KEYS = Object.keys(emptyUserData) as (keyof UserData)[];
@@ -176,6 +177,8 @@ export const useRoadCube = create<RoadCubeState>()((set, get) => ({
   setPreferredAlg: (caseId, index) => set((s) => ({ preferredAlg: { ...s.preferredAlg, [caseId]: index } })),
 
   updateSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
+
+  setDailyGoal: (dailyGoal) => set({ dailyGoal }),
 
   resetProgress: () =>
     set((s) => ({

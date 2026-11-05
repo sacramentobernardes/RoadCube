@@ -42,6 +42,120 @@ export const ALG_SET_LABELS: Record<AlgSet, string> = {
   pll: "PLL",
 };
 
+// Casos do Full OLL e do F2L completo. Reconhecimento gerado a partir do estado
+// real de cada caso; `npm run verify:algs` prova que nenhum caso ficou de fora.
+
+const oll = (number: number, group: string, recognition: string, algs: string[]): AlgCase => ({
+  id: `oll-${number}`,
+  set: "oll",
+  group,
+  name: `OLL ${number}`,
+  recognition,
+  algs,
+  view: "oll",
+  preserve: "f2l",
+});
+
+const f2l = (number: number, group: string, recognition: string, algs: string[]): AlgCase => ({
+  id: `f2l-case-${number}`,
+  set: "f2l",
+  group,
+  name: `F2L ${number}`,
+  recognition,
+  algs,
+  view: "f2l",
+  preserve: "cross-but-fr",
+});
+
+const FULL_OLL_CASES: AlgCase[] = [
+  oll(1, "Ponto", "Amarelo em cima: nenhuma aresta; nenhuma quina. Nas laterais: frente 1, direita 3, trás 1, esquerda 3.", ["R U2 R2 F R F' U2 R' F R F'"]),
+  oll(2, "Ponto", "Amarelo em cima: nenhuma aresta; nenhuma quina. Nas laterais: frente 2, direita 1, trás 2, esquerda 3.", ["F R U R' U' F' f R U R' U' f'"]),
+  oll(3, "Ponto", "Amarelo em cima: nenhuma aresta; quina frente-direita. Nas laterais: frente 1, direita 2, trás 2, esquerda 2.", ["f R U R' U' f' U' F R U R' U' F'"]),
+  oll(4, "Ponto", "Amarelo em cima: nenhuma aresta; quina trás-direita. Nas laterais: frente 2, direita 2, trás 1, esquerda 2.", ["f R U R' U' f' U F R U R' U' F'"]),
+  oll(17, "Ponto", "Amarelo em cima: nenhuma aresta; quinas frente-direita e trás-esquerda. Nas laterais: frente 1, direita 1, trás 2, esquerda 2.", ["R U R' U R' F R F' U2 R' F R F'"]),
+  oll(18, "Ponto", "Amarelo em cima: nenhuma aresta; quinas trás-direita e trás-esquerda. Nas laterais: frente 3, direita 1, trás 1, esquerda 1.", ["r U R' U R U2 r2 U' R U' R' U2 r"]),
+  oll(19, "Ponto", "Amarelo em cima: nenhuma aresta; quinas trás-direita e trás-esquerda. Nas laterais: frente 1, direita 2, trás 1, esquerda 2.", ["M U R U R' U' M' R' F R F'"]),
+  oll(20, "Ponto", "Amarelo em cima: nenhuma aresta; quinas frente-direita, trás-direita, trás-esquerda e frente-esquerda. Nas laterais: frente 1, direita 1, trás 1, esquerda 1.", ["r U R' U' M2 U R U' R' U' M'"]),
+  oll(5, "Quadrado", "Amarelo em cima: arestas frente e direita; quina frente-direita. Nas laterais: frente 0, direita 1, trás 2, esquerda 2.", ["r' U2 R U R' U r"]),
+  oll(6, "Quadrado", "Amarelo em cima: arestas direita e trás; quina trás-direita. Nas laterais: frente 2, direita 1, trás 0, esquerda 2.", ["r U2 R' U' R U' r'"]),
+  oll(7, "Raio", "Amarelo em cima: arestas trás e esquerda; quina frente-esquerda. Nas laterais: frente 2, direita 2, trás 1, esquerda 0.", ["r U R' U R U2 r'"]),
+  oll(8, "Raio", "Amarelo em cima: arestas direita e trás; quina frente-direita. Nas laterais: frente 2, direita 0, trás 1, esquerda 2.", ["l' U' L U' L' U2 l","r' U' R U' R' U2 r"]),
+  oll(11, "Raio", "Amarelo em cima: arestas trás e esquerda; quina trás-direita. Nas laterais: frente 2, direita 1, trás 1, esquerda 1.", ["r U R' U R' F R F' R U2 r'"]),
+  oll(12, "Raio", "Amarelo em cima: arestas frente e direita; quina trás-direita. Nas laterais: frente 1, direita 1, trás 1, esquerda 2.", ["F R U R' U' F' U F R U R' U' F'","M' R' U' R U' R' U2 R U' M"]),
+  oll(9, "Peixe", "Amarelo em cima: arestas trás e esquerda; quina frente-direita. Nas laterais: frente 2, direita 1, trás 1, esquerda 1.", ["R U R' U' R' F R2 U R' U' F'"]),
+  oll(10, "Peixe", "Amarelo em cima: arestas frente e esquerda; quina trás-direita. Nas laterais: frente 1, direita 1, trás 2, esquerda 1.", ["R U R' U R' F R F' R U2 R'"]),
+  oll(35, "Peixe", "Amarelo em cima: arestas frente e direita; quinas frente-direita e trás-esquerda. Nas laterais: frente 1, direita 1, trás 1, esquerda 1.", ["R U2 R2 F R F' R U2 R'"]),
+  oll(37, "Peixe", "Amarelo em cima: arestas trás e esquerda; quinas frente-direita e trás-esquerda. Nas laterais: frente 2, direita 2, trás 0, esquerda 0.", ["F R' F' R U R U' R'"]),
+  oll(13, "Cavaleiro", "Amarelo em cima: arestas direita e esquerda; quina frente-esquerda. Nas laterais: frente 2, direita 1, trás 2, esquerda 0.", ["F U R U2 R' U' R U R' F'"]),
+  oll(14, "Cavaleiro", "Amarelo em cima: arestas direita e esquerda; quina frente-direita. Nas laterais: frente 2, direita 0, trás 2, esquerda 1.", ["R' F R U R' F' R F U' F'"]),
+  oll(15, "Cavaleiro", "Amarelo em cima: arestas direita e esquerda; quina frente-direita. Nas laterais: frente 1, direita 1, trás 2, esquerda 1.", ["r' U' r R' U' R U r' U r"]),
+  oll(16, "Cavaleiro", "Amarelo em cima: arestas direita e esquerda; quina trás-direita. Nas laterais: frente 2, direita 1, trás 1, esquerda 1.", ["r U r' R U R' U' r U' r'"]),
+  oll(51, "Linha", "Amarelo em cima: arestas direita e esquerda; nenhuma quina. Nas laterais: frente 2, direita 2, trás 2, esquerda 0.", ["F U R U' R' U R U' R' F'"]),
+  oll(52, "Linha", "Amarelo em cima: arestas frente e trás; nenhuma quina. Nas laterais: frente 1, direita 3, trás 1, esquerda 1.", ["R U R' U R U' B U' B' R'"]),
+  oll(55, "Linha", "Amarelo em cima: arestas frente e trás; nenhuma quina. Nas laterais: frente 0, direita 3, trás 0, esquerda 3.", ["R U2 R2 U' R U' R' U2 F R F'"]),
+  oll(56, "Linha", "Amarelo em cima: arestas direita e esquerda; nenhuma quina. Nas laterais: frente 1, direita 2, trás 1, esquerda 2.", ["r U r' U R U' R' U R U' R' r U' r'"]),
+  oll(28, "Quinas Prontas", "Amarelo em cima: arestas trás e esquerda; quinas frente-direita, trás-direita, trás-esquerda e frente-esquerda. Nas laterais: frente 1, direita 1, trás 0, esquerda 0.", ["r U R' U' r' R U R U' R'"]),
+  oll(57, "Quinas Prontas", "Amarelo em cima: arestas direita e esquerda; quinas frente-direita, trás-direita, trás-esquerda e frente-esquerda. Nas laterais: frente 1, direita 0, trás 1, esquerda 0.", ["R U R' U' M' U R U' r'"]),
+  oll(31, "P", "Amarelo em cima: arestas direita e trás; quinas frente-direita e trás-direita. Nas laterais: frente 2, direita 0, trás 1, esquerda 1.", ["R' U' F U R U' R' F' R"]),
+  oll(32, "P", "Amarelo em cima: arestas frente e direita; quinas frente-direita e trás-direita. Nas laterais: frente 1, direita 0, trás 2, esquerda 1.", ["R U B' U' R' U R B R'"]),
+  oll(43, "P", "Amarelo em cima: arestas direita e trás; quinas frente-direita e trás-direita. Nas laterais: frente 1, direita 0, trás 0, esquerda 3.", ["F' U' L' U L F","f' L' U' L U f"]),
+  oll(44, "P", "Amarelo em cima: arestas frente e direita; quinas frente-direita e trás-direita. Nas laterais: frente 0, direita 0, trás 1, esquerda 3.", ["f R U R' U' f'"]),
+  oll(34, "C", "Amarelo em cima: arestas direita e esquerda; quinas frente-direita e frente-esquerda. Nas laterais: frente 1, direita 1, trás 1, esquerda 1.", ["R U R2 U' R' F R U R U' F'"]),
+  oll(46, "C", "Amarelo em cima: arestas frente e trás; quinas trás-esquerda e frente-esquerda. Nas laterais: frente 0, direita 3, trás 0, esquerda 1.", ["R' U' R' F R F' U R"]),
+  oll(33, "T", "Amarelo em cima: arestas direita e esquerda; quinas frente-direita e trás-direita. Nas laterais: frente 2, direita 0, trás 2, esquerda 0.", ["R U R' U' R' F R F'"]),
+  oll(45, "T", "Amarelo em cima: arestas direita e esquerda; quinas frente-direita e trás-direita. Nas laterais: frente 1, direita 0, trás 1, esquerda 2.", ["F R U R' U' F'"]),
+  oll(36, "W", "Amarelo em cima: arestas direita e trás; quinas frente-direita e trás-esquerda. Nas laterais: frente 1, direita 0, trás 1, esquerda 2.", ["L' U' L U' L' U L U L F' L' F"]),
+  oll(38, "W", "Amarelo em cima: arestas trás e esquerda; quinas trás-direita e frente-esquerda. Nas laterais: frente 1, direita 2, trás 1, esquerda 0.", ["R U R' U R U' R' U' R' F R F'"]),
+  oll(47, "L", "Amarelo em cima: arestas direita e trás; nenhuma quina. Nas laterais: frente 2, direita 2, trás 1, esquerda 1.", ["F' L' U' L U L' U' L U F"]),
+  oll(48, "L", "Amarelo em cima: arestas trás e esquerda; nenhuma quina. Nas laterais: frente 2, direita 1, trás 1, esquerda 2.", ["F R U R' U' R U R' U' F'"]),
+  oll(49, "L", "Amarelo em cima: arestas direita e trás; nenhuma quina. Nas laterais: frente 2, direita 0, trás 1, esquerda 3.", ["r U' r2 U r2 U r2 U' r"]),
+  oll(50, "L", "Amarelo em cima: arestas frente e direita; nenhuma quina. Nas laterais: frente 1, direita 0, trás 2, esquerda 3.", ["r' U r2 U' r2 U' r2 U r'"]),
+  oll(53, "L", "Amarelo em cima: arestas frente e direita; nenhuma quina. Nas laterais: frente 0, direita 2, trás 1, esquerda 3.", ["r' U' R U' R' U R U' R' U2 r"]),
+  oll(54, "L", "Amarelo em cima: arestas direita e trás; nenhuma quina. Nas laterais: frente 1, direita 2, trás 0, esquerda 3.", ["r U R' U R U' R' U R U2 r'"]),
+  oll(29, "Awkward", "Amarelo em cima: arestas trás e esquerda; quinas frente-direita e trás-direita. Nas laterais: frente 2, direita 1, trás 1, esquerda 0.", ["R U R' U' R U' R' F' U' F R U R'"]),
+  oll(30, "Awkward", "Amarelo em cima: arestas trás e esquerda; quinas frente-direita e frente-esquerda. Nas laterais: frente 1, direita 2, trás 0, esquerda 1.", ["F R' F R2 U' R' U' R U R' F2"]),
+  oll(41, "Awkward", "Amarelo em cima: arestas trás e esquerda; quinas frente-direita e frente-esquerda. Nas laterais: frente 1, direita 1, trás 2, esquerda 0.", ["R U R' U R U2 R' F R U R' U' F'"]),
+  oll(42, "Awkward", "Amarelo em cima: arestas frente e esquerda; quinas trás-direita e trás-esquerda. Nas laterais: frente 2, direita 1, trás 1, esquerda 0.", ["R' U' R U' R' U2 R F R U R' U' F'"]),
+  oll(39, "Raio Grande", "Amarelo em cima: arestas direita e esquerda; quinas trás-direita e frente-esquerda. Nas laterais: frente 1, direita 1, trás 2, esquerda 0.", ["L F' L' U' L U F U' L'"]),
+  oll(40, "Raio Grande", "Amarelo em cima: arestas direita e esquerda; quinas frente-direita e trás-esquerda. Nas laterais: frente 1, direita 0, trás 2, esquerda 1.", ["R' F R U R' U' F' U R"]),
+];
+
+const FULL_F2L_CASES: AlgCase[] = [
+  f2l(9, "Branco para Cima", "Quina em cima (frente-direita), branco para cima. Meio em cima (frente), cor da frente para cima.", ["R U R' F' U F R U R'"]),
+  f2l(10, "Branco para Cima", "Quina em cima (trás-direita), branco para cima. Meio em cima (trás), cor da direita para cima.", ["R U R' F' U2 F R U R'","R U R' U' R U' R' U F' U' F"]),
+  f2l(11, "Branco para Cima", "Quina em cima (frente-esquerda), branco para cima. Meio em cima (direita), cor da frente para cima.", ["R U2 R' U R U' R'","U R U2 R' U R U' R'"]),
+  f2l(12, "Branco para Cima", "Quina em cima (trás-esquerda), branco para cima. Meio em cima (frente), cor da direita para cima.", ["R U R' F' U' F","U2 F' U' F U' F' U F"]),
+  f2l(13, "Branco para Cima", "Quina em cima (trás-esquerda), branco para cima. Meio em cima (direita), cor da frente para cima.", ["F' U' F R U R'","U2 R U R' U R U' R'"]),
+  f2l(14, "Branco para Cima", "Quina em cima (trás-direita), branco para cima. Meio em cima (frente), cor da direita para cima.", ["F' U2 F U' F' U F","U' F' U2 F U' F' U F"]),
+  f2l(15, "Quina e Meio em Cima", "Quina em cima (frente-esquerda), branco para a frente. Meio em cima (esquerda), cor da frente para cima.", ["F' U2 F U' R U R'","R' U2 R2 U R2 U R"]),
+  f2l(16, "Quina e Meio em Cima", "Quina em cima (trás-direita), branco para trás. Meio em cima (trás), cor da frente para cima.", ["R U' R' U R U R'","U' R U' R' U R U R'"]),
+  f2l(17, "Quina e Meio em Cima", "Quina em cima (frente-direita), branco para a direita. Meio em cima (direita), cor da direita para cima.", ["R U' R' U2 F' U' F"]),
+  f2l(18, "Quina e Meio em Cima", "Quina em cima (frente-esquerda), branco para a frente. Meio em cima (direita), cor da direita para cima.", ["F' U2 F U2 F' U F","U F' U2 F U2 F' U F"]),
+  f2l(19, "Quina e Meio em Cima", "Quina em cima (trás-esquerda), branco para a esquerda. Meio em cima (direita), cor da frente para cima.", ["R U' R' U' R U R'","U' R U R' U R U R'"]),
+  f2l(20, "Quina e Meio em Cima", "Quina em cima (frente-direita), branco para a frente. Meio em cima (frente), cor da frente para cima.", ["F' U F U2 R U R'"]),
+  f2l(21, "Quina e Meio em Cima", "Quina em cima (frente-esquerda), branco para a esquerda. Meio em cima (esquerda), cor da direita para cima.", ["F' U F U' F' U' F","U F' U F U' F' U' F"]),
+  f2l(22, "Quina e Meio em Cima", "Quina em cima (trás-direita), branco para a direita. Meio em cima (trás), cor da direita para cima.", ["R U2 R' U F' U' F","U' R U2 R' U F' U' F"]),
+  f2l(23, "Quina e Meio em Cima", "Quina em cima (frente-esquerda), branco para a esquerda. Meio em cima (direita), cor da direita para cima.", ["F' U' F U' F' U' F","U' R U' R' U F' U' F"]),
+  f2l(24, "Quina e Meio em Cima", "Quina em cima (trás-direita), branco para a direita. Meio em cima (frente), cor da frente para cima.", ["R U2 R' U2 R U' R'","U' R U2 R' U2 R U' R'"]),
+  f2l(25, "Meio no Slot", "Quina em cima (frente-direita), branco para cima. Meio no slot, no lugar certo.", ["R U2 R' F' U2 F U' R U R'","R U R' U' R U R' U' R U R'"]),
+  f2l(26, "Meio no Slot", "Quina em cima (trás-direita), branco para cima. Meio no slot, invertido.", ["F' U2 F R U R'","R U' R' U F' U F"]),
+  f2l(27, "Meio no Slot", "Quina em cima (trás-direita), branco para trás. Meio no slot, no lugar certo.", ["R U2 R' U R U R'","U R U R' U2 R U R'"]),
+  f2l(28, "Meio no Slot", "Quina em cima (trás-esquerda), branco para a esquerda. Meio no slot, invertido.", ["F' U' F U R U' R'","U F' U' F U' R U R'"]),
+  f2l(29, "Meio no Slot", "Quina em cima (trás-direita), branco para a direita. Meio no slot, no lugar certo.", ["R U' R' U2 R U' R'","U' R U' R' U2 R U' R'"]),
+  f2l(30, "Meio no Slot", "Quina em cima (trás-esquerda), branco para trás. Meio no slot, invertido.", ["R U' R' U' F' U' F"]),
+  f2l(31, "Quina no Slot", "Quina no slot, branco para baixo. Meio em cima (trás), cor da frente para cima.", ["F' U F U R U' R'","F' U' F U R U R'"]),
+  f2l(32, "Quina no Slot", "Quina no slot, branco para baixo. Meio em cima (esquerda), cor da direita para cima.", ["R U R' U' F' U' F","U R U' R' F R' F' R"]),
+  f2l(33, "Quina no Slot", "Quina no slot, branco para a frente. Meio em cima (direita), cor da frente para cima.", ["F' U2 F R U2 R'","R U' R' U R U' R'"]),
+  f2l(34, "Quina no Slot", "Quina no slot, branco para a frente. Meio em cima (trás), cor da direita para cima.", ["R U' R' F' U' F"]),
+  f2l(35, "Quina no Slot", "Quina no slot, branco para a direita. Meio em cima (esquerda), cor da frente para cima.", ["F' U F R U R'","R U R' U' R U R'"]),
+  f2l(36, "Quina no Slot", "Quina no slot, branco para a direita. Meio em cima (frente), cor da direita para cima.", ["R U2 R' F' U2 F","F' U F U' F' U F"]),
+  f2l(37, "Quina e Meio no Slot", "Quina no slot, branco para baixo. Meio no slot, invertido.", ["F' U F U' R U2 R' U2 R U' R'","R U2 R' U R U2 R' U F' U' F"]),
+  f2l(38, "Quina e Meio no Slot", "Quina no slot, branco para a frente. Meio no slot, no lugar certo.", ["R U' R' U' R U R' U2 R U' R'"]),
+  f2l(39, "Quina e Meio no Slot", "Quina no slot, branco para a frente. Meio no slot, invertido.", ["F' U F R U' R' U2 R U R'","R U' R' U' R U' R' U F' U' F"]),
+  f2l(40, "Quina e Meio no Slot", "Quina no slot, branco para a direita. Meio no slot, no lugar certo.", ["R U' R' U R U2 R' U R U' R'"]),
+  f2l(41, "Quina e Meio no Slot", "Quina no slot, branco para a direita. Meio no slot, invertido.", ["R U' R' F' U F U2 F' U' F"]),
+];
+
 export const ALG_CASES: AlgCase[] = [
   // ───────────── Método básico (camadas) ─────────────
   {
@@ -237,6 +351,8 @@ export const ALG_CASES: AlgCase[] = [
     preserve: "cross-but-bl",
   },
 
+  ...FULL_F2L_CASES,
+
   // ───────────── OLL (2-Look) ─────────────
   {
     id: "oll-edge-line",
@@ -338,6 +454,8 @@ export const ALG_CASES: AlgCase[] = [
     view: "oll",
     preserve: "f2l",
   },
+
+  ...FULL_OLL_CASES,
 
   // ───────────── PLL (todas as 21) ─────────────
   {

@@ -101,8 +101,28 @@ function closingRotation(alg: string): string {
 /** Algoritmo que monta o caso resolvido por `alg`, já descontando rotações. */
 const setupFor = (alg: string) => new Alg(`${alg} ${closingRotation(alg)}`).invert().toString();
 
-/** OLL: só importa a orientação da última camada; PLL/F2L: o estado inteiro. */
-function sameCase(a: KPattern, b: KPattern, orientationOnly: boolean) {
+/** Onde estão a quina e o meio do slot frente-direita, sem contar a posição da camada de cima. */
+function pairKey(p: KPattern) {
+  const { CORNERS: c, EDGES: e } = p.patternData;
+  const corner = [...c.pieces].indexOf(4);
+  const edge = [...e.pieces].indexOf(8);
+  const turn = corner < 4 ? corner : edge < 4 ? edge : 0;
+  const local = (i: number) => (i < 4 ? (i - turn + 4) % 4 : i);
+  return `${local(corner)}.${c.orientation[corner]}.${local(edge)}.${e.orientation[edge]}`;
+}
+
+/** Orientação da última camada, igual para as quatro posições de U. */
+function ollKey(p: KPattern) {
+  const edges = [...p.patternData.EDGES.orientation].slice(0, 4);
+  const corners = [...p.patternData.CORNERS.orientation].slice(0, 4);
+  return [0, 1, 2, 3]
+    .map((turn) => [edges, corners].map((o) => o.map((_, i) => o[(i + turn) % 4]).join("")).join("-"))
+    .sort()[0];
+}
+
+/** OLL: só importa a orientação da última camada; F2L: o par; PLL: o estado inteiro. */
+function sameCase(a: KPattern, b: KPattern, orientationOnly: boolean, pairOnly: boolean) {
+  if (pairOnly) return pairKey(a) === pairKey(b);
   if (!orientationOnly) return a.isIdentical(b);
   return (["EDGES", "CORNERS"] as const).every((orbit) =>
     [0, 1, 2, 3].every((i) => a.patternData[orbit].orientation[i] === b.patternData[orbit].orientation[i]),
@@ -132,11 +152,12 @@ for (const c of ALG_CASES) {
 for (const c of ALG_CASES) {
   if (c.algs.length < 2) continue;
   const orientationOnly = c.view === "oll";
+  const pairOnly = c.preserve === "cross-but-fr";
   const baseCase = solved.applyAlg(setupFor(c.algs[0]));
   for (const alg of c.algs.slice(1)) {
     const setup = setupFor(alg);
     const same = AUFS.some((pre) =>
-      AUFS.some((post) => sameCase(solved.applyAlg(`${pre} ${setup} ${post}`), baseCase, orientationOnly)),
+      AUFS.some((post) => sameCase(solved.applyAlg(`${pre} ${setup} ${post}`), baseCase, orientationOnly, pairOnly)),
     );
     if (!same) {
       failures++;
@@ -144,6 +165,28 @@ for (const c of ALG_CASES) {
     }
   }
 }
+
+// Cobertura: cada estado possível precisa de um caso. Os totais não são digitados
+// à mão no algoritmo: 57 e 41 são o número de estados, menos o já resolvido.
+function checkCoverage(label: string, expected: number, cases: typeof ALG_CASES, keyOf: (p: KPattern) => string) {
+  const seen = new Map<string, string>();
+  for (const c of cases) {
+    const key = keyOf(solved.applyAlg(setupFor(c.algs[0])));
+    const other = seen.get(key);
+    if (other && c.group !== "2-Look: Arestas" && !other.startsWith("oll-edge")) {
+      failures++;
+      console.log(`✗ ${c.id} e ${other} são o mesmo caso`);
+    }
+    seen.set(key, c.id);
+  }
+  if (seen.size !== expected) {
+    failures++;
+    console.log(`✗ ${label}: ${seen.size} casos distintos, esperados ${expected}`);
+  } else console.log(`${label}: ${seen.size} casos distintos`);
+}
+
+checkCoverage("OLL", 57, ALG_CASES.filter((c) => c.set === "oll"), ollKey);
+checkCoverage("F2L", 41, ALG_CASES.filter((c) => c.preserve === "cross-but-fr"), pairKey);
 
 const total = ALG_CASES.reduce((n, c) => n + c.algs.length, 0);
 console.log(`\n${total - failures}/${total} verificações OK`);

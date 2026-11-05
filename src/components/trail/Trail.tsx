@@ -1,26 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight, Check, Lock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ALL_LESSONS, CURRICULUM, isLessonUnlocked, type Lesson, type Module } from "@/data/curriculum";
 import { caseCube } from "@/lib/exercises";
 import { MAX_HEARTS, levelFromXp } from "@/lib/gamification";
 import { dayKey } from "@/lib/dates";
 import { liveStreak, useRoadCube } from "@/lib/store";
 import { useDueCount } from "@/lib/use-due-count";
-import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/Button";
 import { Kicker } from "@/components/ui/Kicker";
 import { Tag } from "@/components/ui/Tag";
-import { ProgressBar } from "@/components/ui/ProgressBar";
 import { StatColumns } from "@/components/ui/StatColumns";
 import { CubeFrame } from "@/components/cube/CubeFrame";
 import { TwistyCube, type CubeSpec } from "@/components/cube/TwistyCube";
 import { heartsTooltip } from "@/components/shell/StatsPills";
 import { MODULE_COLORS } from "./colors";
-
-type NodeState = "completed" | "current" | "unlocked" | "locked" | "soon";
+import { HowItWorks, TodayPanel } from "./TodayPanel";
+import { ModuleList, type NodeState } from "./TrailMap";
 
 const AVAILABLE = ALL_LESSONS.filter((l) => !l.comingSoon);
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -52,17 +49,17 @@ export function Trail() {
       <Hero lesson={current} module={currentModule} anyCompleted={Object.keys(completed).length > 0} />
       <Stats />
       <ReviewRow />
+      <TodayPanel />
 
       <section id="trilha" className="mt-16 scroll-mt-20">
         <h2 className="text-2xl font-bold tracking-tight">Trilha</h2>
-        <p className="mt-1 text-muted">Cada lição desbloqueia a próxima. {AVAILABLE.length} lições em 5 módulos.</p>
-        {/* Em telas largas: módulos 1–2 à esquerda e 3–5 à direita, com alturas parecidas. */}
-        <div className="mt-8 2xl:columns-2 2xl:gap-16">
-          {CURRICULUM.map((module, i) => (
-            <ModuleSection key={module.id} module={module} index={i} stateOf={stateOf} completed={completed} />
-          ))}
-        </div>
+        <p className="mt-1 text-muted">
+          {AVAILABLE.length} lições em 5 módulos. Cada lição desbloqueia a próxima. Clique em um módulo para ver o caminho.
+        </p>
+        <ModuleList stateOf={stateOf} completed={completed} currentModuleId={currentModule?.id} />
       </section>
+
+      <HowItWorks />
     </div>
   );
 }
@@ -169,123 +166,5 @@ function ReviewRow() {
       </span>
       <ArrowRight className="size-4 shrink-0 text-muted transition group-hover:translate-x-0.5 group-hover:text-text" />
     </Link>
-  );
-}
-
-function ModuleSection({
-  module,
-  index,
-  stateOf,
-  completed,
-}: {
-  module: Module;
-  index: number;
-  stateOf: (l: Lesson) => NodeState;
-  completed: Record<string, unknown>;
-}) {
-  const color = MODULE_COLORS[module.color];
-  const available = module.lessons.filter((l) => !l.comingSoon);
-  const done = available.filter((l) => completed[l.id]).length;
-
-  return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 border-t border-border py-10 break-inside-avoid md:grid-cols-[260px_minmax(0,1fr)] md:gap-12 2xl:grid-cols-[220px_minmax(0,1fr)] 2xl:gap-10">
-      <div className="md:sticky md:top-24 md:self-start 2xl:static">
-        <Kicker color={color}>Módulo {pad(index + 1)}</Kicker>
-        <h3 className="mt-3 text-2xl font-bold tracking-tight">{module.title}</h3>
-        <p className="mt-1 text-sm text-muted">{module.subtitle}</p>
-        <div className="mt-5 flex items-center gap-3">
-          <ProgressBar value={available.length ? done / available.length : 0} color={color} />
-          <span className="shrink-0 font-mono text-xs text-muted">
-            {done}/{available.length}
-          </span>
-        </div>
-      </div>
-
-      <ol className="relative">
-        {module.lessons.map((lesson, i) => (
-          <LessonRow
-            key={lesson.id}
-            lesson={lesson}
-            color={color}
-            state={stateOf(lesson)}
-            last={i === module.lessons.length - 1}
-          />
-        ))}
-      </ol>
-    </div>
-  );
-}
-
-function LessonRow({ lesson, color, state, last }: { lesson: Lesson; color: string; state: NodeState; last: boolean }) {
-  const open = state === "completed" || state === "current" || state === "unlocked";
-  const number = lessonNumber(lesson.id);
-
-  const content = (
-    <div
-      className={cn(
-        "flex items-center gap-4 border-b border-border py-4 pr-2 transition",
-        open && "hover:bg-surface",
-        state === "current" && "bg-surface",
-      )}
-    >
-      <span className="w-6 shrink-0 font-mono text-xs text-muted">{lesson.comingSoon ? "··" : pad(number)}</span>
-      <div className="min-w-0 flex-1">
-        <div className={cn("font-semibold", !open && "text-muted")}>{lesson.title}</div>
-        <div className="truncate text-sm text-muted">{lesson.description}</div>
-      </div>
-      <span className="shrink-0 font-mono text-xs text-muted">
-        {state === "completed" && "concluída"}
-        {state === "current" && <Tag tone="green">em andamento</Tag>}
-        {state === "unlocked" && "disponível"}
-        {state === "locked" && "bloqueada"}
-        {state === "soon" && "em breve"}
-      </span>
-      {open ? <ArrowRight className="size-4 shrink-0 text-muted" /> : <span className="w-4 shrink-0" />}
-    </div>
-  );
-
-  return (
-    <li className="relative pl-11">
-      {/* Linha do tempo + nó em forma de adesivo do cubo */}
-      {!last && <span className="absolute top-1/2 bottom-[-50%] left-[11px] w-px bg-border" aria-hidden />}
-      <span className="absolute top-1/2 left-0 -translate-y-1/2">
-        <Node state={state} color={color} />
-      </span>
-      {open ? <Link href={`/lesson/${lesson.id}`}>{content}</Link> : content}
-    </li>
-  );
-}
-
-function Node({ state, color }: { state: NodeState; color: string }) {
-  if (state === "completed") {
-    return (
-      <span className="grid size-6 place-items-center rounded-[5px]" style={{ background: color }}>
-        <Check className="size-3.5" style={{ color: color === "var(--cube-yellow)" ? "#111" : "#fff" }} strokeWidth={3} />
-      </span>
-    );
-  }
-  if (state === "current" || state === "unlocked") {
-    return (
-      <span className="grid size-6 place-items-center rounded-[5px] border-2 bg-surface" style={{ borderColor: color }}>
-        {state === "current" && (
-          <motion.span
-            className="size-2.5 rounded-[2px]"
-            style={{ background: color }}
-            animate={{ scale: [1, 0.6, 1] }}
-            transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
-          />
-        )}
-      </span>
-    );
-  }
-  return (
-    <span
-      className={cn(
-        "grid size-6 place-items-center rounded-[5px] border border-border bg-surface-2 text-muted",
-        state === "soon" && "border-dashed bg-transparent",
-      )}
-    >
-      {state === "locked" && <Lock className="size-3" />}
-    </span>
   );
 }

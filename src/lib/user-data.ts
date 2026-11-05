@@ -36,7 +36,19 @@ export interface Profile {
 export interface Settings {
   sound: boolean;
   animationSpeed: number;
+  /** Foto em data URL ou "preset:<id>" (ver components/shell/Avatar.tsx). */
+  avatar: string | null;
+  hideTimer: boolean;
+  scrambleLength: number;
 }
+
+export const DEFAULT_SETTINGS: Settings = {
+  sound: true,
+  animationSpeed: 1,
+  avatar: null,
+  hideTimer: false,
+  scrambleLength: 20,
+};
 
 export interface Streak {
   count: number;
@@ -162,7 +174,7 @@ export async function loadUserData(supabase: SupabaseClient, userId: string): Pr
     hearts: p.hearts,
     heartsUpdatedAt: new Date(p.hearts_updated_at).getTime(),
     streak: { count: p.streak_count, best: p.streak_best, lastDay: p.streak_last_day },
-    settings: p.settings,
+    settings: { ...DEFAULT_SETTINGS, ...p.settings },
     lessons: Object.fromEntries(
       (lessons.data ?? []).map((l) => [l.lesson_id, { completedAt: l.completed_at, times: l.times, bestAccuracy: l.best_accuracy }]),
     ),

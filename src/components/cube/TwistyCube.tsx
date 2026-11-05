@@ -6,6 +6,7 @@ import type { TwistyPlayer } from "cubing/twisty";
 import type { CubeView } from "@/data/algorithms";
 import { CUBE_VIEWS } from "@/lib/cube-views";
 import { applyCubeTheme } from "@/lib/cube-theme";
+import { useRoadCube } from "@/lib/store";
 import { cn } from "@/lib/cn";
 
 const FULL_MASK = "EDGES:------------,CORNERS:--------,CENTERS:------";
@@ -44,6 +45,7 @@ export const TwistyCube = forwardRef<TwistyCubeHandle, Props>(function TwistyCub
   const [ready, setReady] = useState(false);
   const [themed, setThemed] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const speed = useRoadCube((s) => s.settings.animationSpeed);
 
   useImperativeHandle(ref, () => ({
     play: () => playerRef.current?.play(),
@@ -89,7 +91,7 @@ export const TwistyCube = forwardRef<TwistyCubeHandle, Props>(function TwistyCub
     player.experimentalSetupAnchor = anchor;
     player.experimentalStickeringMaskOrbits = config.mask ?? FULL_MASK;
     player.alg = alg;
-    player.tempoScale = tempo;
+    player.tempoScale = tempo * speed;
     player.jumpToStart();
     if (!autoplay) return;
 
@@ -111,7 +113,7 @@ export const TwistyCube = forwardRef<TwistyCubeHandle, Props>(function TwistyCub
       window.clearTimeout(restart);
       player.experimentalModel.coarseTimelineInfo.removeFreshListener(onTimeline);
     };
-  }, [ready, alg, setup, anchor, view, autoplay, loop, tempo]);
+  }, [ready, alg, setup, anchor, view, autoplay, loop, tempo, speed]);
 
   const cube = (
     <div

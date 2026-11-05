@@ -46,7 +46,8 @@ export function Trainer() {
 }
 
 function ScrambleTrainer() {
-  const [scramble, setScramble] = useState(() => randomScramble());
+  const length = useRoadCube((s) => s.settings.scrambleLength);
+  const [scramble, setScramble] = useState(() => randomScramble(length));
   const allSolves = useRoadCube((s) => s.solves);
   const addSolve = useRoadCube((s) => s.addSolve);
   const solves = useMemo(() => allSolves.filter((s) => !s.caseId), [allSolves]);
@@ -57,10 +58,10 @@ function ScrambleTrainer() {
         <div className="flex min-w-0 flex-col gap-8">
           <div>
             <div className="flex items-center justify-between">
-              <Kicker>Scramble · 20 movimentos</Kicker>
+              <Kicker>Scramble · {length} movimentos</Kicker>
               <button
                 type="button"
-                onClick={() => setScramble(randomScramble())}
+                onClick={() => setScramble(randomScramble(length))}
                 className="flex items-center gap-1.5 font-mono text-xs text-muted transition hover:text-text"
               >
                 <RefreshCw className="size-3.5" /> novo
@@ -71,7 +72,7 @@ function ScrambleTrainer() {
           <SpeedTimer
             onSolve={(ms) => {
               addSolve({ ms, scramble });
-              setScramble(randomScramble());
+              setScramble(randomScramble(length));
             }}
           />
         </div>

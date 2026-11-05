@@ -4,9 +4,13 @@
 
 Estilo editorial: fundo cinza suave, divisórias de 1px, títulos em Geist com espaçamento negativo e rótulos em IBM Plex Mono maiúsculo (`Kicker`). As cores do cubo aparecem só como acento (cada módulo tem uma). O cubo 3D sempre aparece dentro da `CubeFrame`, uma janela escura com barra de título mono e etiquetas (`Tag`). Primitivos ficam em `components/ui`.
 
-Largura: toda página usa `.page-width`, que ocupa a janela com margem proporcional, até 2000px. A partir de `2xl`, a trilha vira duas colunas. Na Home, a partir de `xl`, texto e cubo formam um bloco centralizado, com as métricas em faixa horizontal logo abaixo. Os cubos têm tamanho limitado, inclusive pela altura da janela. Texto corrido fica limitado a cerca de 65 caracteres.
+Largura: toda página usa `.page-width`, que ocupa a janela com margem proporcional, até 2000px. A partir de `2xl`, os cubos crescem até um limite. Na Home, a partir de `xl`, texto e cubo formam um bloco centralizado, com as métricas em faixa horizontal logo abaixo. A trilha lista os módulos recolhidos (`ModuleList`); cada um abre seu trecho de estrada, calculado em `lib/trail-layout.ts` conforme a largura. Texto corrido fica limitado a cerca de 65 caracteres.
 
 Temas: claro, escuro ou sistema (`lib/theme.ts`), escolhidos por aparelho. Os tokens ficam em `globals.css`; os acentos do tema claro têm contraste WCAG AA. Os adesivos do cubo têm paleta própria, em `lib/cube-theme.ts`.
+
+Home: painel do dia (`TodayPanel`) e trilha em módulos recolhíveis (`ModuleList`). Cada módulo abre seu trecho de estrada, calculado em `lib/trail-layout.ts` conforme a largura. Perfil: abas Visão geral (`Dashboard`, gráficos em `profile/charts.tsx`) e Configurações (`SettingsPanel`).
+
+Avatar e preferências ficam em `profiles.settings` (jsonb): a foto é reduzida a 160 px no navegador e salva como data URL, sem Storage. Novas chaves precisam de valor em `DEFAULT_SETTINGS`, que completa o que falta em contas antigas.
 
 ## Visão geral
 
@@ -74,6 +78,4 @@ Esquema em `supabase/migrations/`. Passo a passo de configuração em [SUPABASE.
 
 ## Pendências de conteúdo
 
-- Full OLL (57 casos): a lição `m4-full` está marcada como `comingSoon`.
-- Mais casos de F2L (há 10, dos 41).
 - Notificações de revisão (Web Push).
