@@ -30,16 +30,23 @@ export interface TwistyCubeHandle {
   jumpToStart(): void;
   jumpToEnd(): void;
   addMove(move: string): void;
+  /** Pausa antes do movimento `index`; o total leva ao fim do algoritmo. */
+  seekMove(index: number): Promise<void>;
+  /** Volta ao ângulo padrão, depois de a pessoa arrastar o cubo. */
+  resetView(): void;
 }
 
 interface Props extends CubeSpec {
   className?: string;
   /** Chamado quando o cubo já está pronto para aparecer. */
   onReady?: () => void;
+  /** Avisa quantos movimentos já terminaram. Passa a animar um movimento por vez. */
+  onMove?: (finished: number) => void;
+  onPlaying?: (playing: boolean) => void;
 }
 
 export const TwistyCube = forwardRef<TwistyCubeHandle, Props>(function TwistyCube(
-  { alg = "", setup = "", anchor = "start", view = "full", autoplay, loop, controls, tempo = 1, className, onReady },
+  { alg = "", setup = "", anchor = "start", view = "full", autoplay, loop, controls, tempo = 1, className, onReady, onMove, onPlaying },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,10 +56,14 @@ export const TwistyCube = forwardRef<TwistyCubeHandle, Props>(function TwistyCub
   const [playing, setPlaying] = useState(false);
   const speed = useRoadCube((s) => s.settings.animationSpeed);
   const readyCallback = useRef(onReady);
+  const moveCallback = useRef(onMove);
+  const playingCallback = useRef(onPlaying);
 
   useEffect(() => {
     readyCallback.current = onReady;
-  }, [onReady]);
+    moveCallback.current = onMove;
+    playingCallback.current = onPlaying;
+  }, [onReady, onMove, onPlaying]);
 
   useImperativeHandle(ref, () => ({
     play: () => playerRef.current?.play(),
@@ -60,6 +71,15 @@ export const TwistyCube = forwardRef<TwistyCubeHandle, Props>(function TwistyCub
     jumpToStart: () => playerRef.current?.jumpToStart(),
     jumpToEnd: () => playerRef.current?.jumpToEnd(),
     addMove: (move) => playerRef.current?.experimentalAddMove(move),
+    seekMove: async (index) => {
+      const player = playerRef.current;
+      if (!player) return;
+      player.pause();
+      const indexer = await player.experimentalModel.indexer.get();
+      if (index >= indexer.numAnimatedLeaves()) player.jumpToEnd();
+      else player.timestamp = indexer.indexToMoveStartTimestamp(index as Parameters<typeof indexer.indexToMoveStartTimestamp>[0]);
+    },
+    resetView: () => playerRef.current?.experimentalModel.twistySceneModel.orbitCoordinatesRequest.set("auto"),
   }));
 
   // O TwistyPlayer é um Web Component: só pode ser criado no navegador.
@@ -79,7 +99,19 @@ export const TwistyCube = forwardRef<TwistyCubeHandle, Props>(function TwistyCub
       player.style.height = "100%";
       containerRef.current.appendChild(player);
       playerRef.current = player;
-      player.experimentalModel.coarseTimelineInfo.addFreshListener((info) => setPlaying(info.playing));
+      player.experimentalModel.coarseTimelineInfo.addFreshListener((info) => {
+        if (cancelled) return;
+        setPlaying(info.playing);
+        playingCallback.current?.(info.playing);
+      });
+      if (moveCallback.current) {
+        player.experimentalModel.indexerConstructorRequest.set("simple");
+        // No fim de um movimento, o índice ainda é o dele, marcado como "terminando".
+        player.experimentalModel.currentMoveInfo.addFreshListener((info) => {
+          if (cancelled) return;
+          moveCallback.current?.(info.patternIndex + info.movesFinishing.length + info.movesFinished.length);
+        });
+      }
       setReady(true);
       applyCubeTheme(player).then(() => {
         if (cancelled) return;
@@ -89,10 +121,17 @@ export const TwistyCube = forwardRef<TwistyCubeHandle, Props>(function TwistyCub
     });
     return () => {
       cancelled = true;
+      // Sem pausar, o cubo removido continua animando e avisando a posição dele.
+      player?.pause();
       player?.remove();
       playerRef.current = null;
     };
   }, []);
+
+  // Um caso novo sempre abre no ângulo padrão, senão o rótulo das faces deixa de valer.
+  useEffect(() => {
+    playerRef.current?.experimentalModel.twistySceneModel.orbitCoordinatesRequest.set("auto");
+  }, [alg, setup]);
 
   useEffect(() => {
     const player = playerRef.current;

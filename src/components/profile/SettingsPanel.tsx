@@ -191,6 +191,14 @@ export function SettingsPanel() {
             onChange={(scrambleLength) => s.updateSettings({ scrambleLength })}
           />
         </Row>
+        <Row title="Velocidade do scramble" detail="Para o modo Passo a passo do Treino.">
+          <Choice
+            label="Velocidade do scramble"
+            value={s.settings.scrambleSpeed}
+            options={[0.5, 1, 1.5, 2].map((v) => ({ value: v, label: `${String(v).replace(".", ",")}×` }))}
+            onChange={(scrambleSpeed) => s.updateSettings({ scrambleSpeed })}
+          />
+        </Row>
         <Row title="Esconder o tempo" detail="O cronômetro só mostra o resultado ao parar.">
           <Switch label="Esconder o tempo" checked={s.settings.hideTimer} onChange={() => s.updateSettings({ hideTimer: !s.settings.hideTimer })} />
         </Row>

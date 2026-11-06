@@ -1,14 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Eye, RefreshCw } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { Eye, LocateFixed, RefreshCw } from "lucide-react";
 import { ALG_CASES, ALG_SET_LABELS, getCase, type AlgSet } from "@/data/algorithms";
-import { invertAlg } from "@/lib/alg";
+import { invertAlg, tokenize } from "@/lib/alg";
 import { randomScramble, AUFS } from "@/lib/scramble";
 import { pick } from "@/lib/random";
 import { useRoadCube } from "@/lib/store";
 import { cn } from "@/lib/cn";
-import { TwistyCube } from "@/components/cube/TwistyCube";
+import { TwistyCube, type TwistyCubeHandle } from "@/components/cube/TwistyCube";
 import { CubeFrame } from "@/components/cube/CubeFrame";
 import { AlgDisplay } from "@/components/cube/AlgDisplay";
 import { Button } from "@/components/ui/Button";
@@ -17,6 +17,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Tabs } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
 import { SpeedTimer } from "./SpeedTimer";
+import { ScrambleCube, ScrambleText } from "./ScrambleSteps";
 import { SolveStats } from "./SolveStats";
 
 type Mode = "scramble" | "cases";
@@ -28,7 +29,7 @@ export function Trainer() {
       <PageHeader
         kicker="Modo treino"
         title="Cronometre cada resolução"
-        description="Embaralhe com o scramble oficial e resolva, ou treine só os casos que você escolher."
+        description="Embaralhe com um scramble aleatório e resolva, ou treine só os casos que você escolher."
         color="var(--cube-blue)"
       />
       <Tabs
@@ -47,18 +48,38 @@ export function Trainer() {
 
 function ScrambleTrainer() {
   const length = useRoadCube((s) => s.settings.scrambleLength);
+  const view = useRoadCube((s) => s.settings.scrambleView);
+  const updateSettings = useRoadCube((s) => s.updateSettings);
+  const [step, setStep] = useState(0);
+  const cube = useRef<TwistyCubeHandle>(null);
   const [scramble, setScramble] = useState(() => randomScramble(length));
   const allSolves = useRoadCube((s) => s.solves);
   const addSolve = useRoadCube((s) => s.addSolve);
   const solves = useMemo(() => allSolves.filter((s) => !s.caseId), [allSolves]);
+  const moves = useMemo(() => tokenize(scramble), [scramble]);
+  const steps = view === "steps";
 
   return (
     <div className="flex flex-col gap-12">
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,360px)] 2xl:grid-cols-[minmax(0,1fr)_minmax(0,min(460px,54vh))] 2xl:gap-16 md:gap-14">
-        <div className="flex min-w-0 flex-col gap-8">
-          <div>
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-10 md:grid-rows-[auto_1fr] md:grid-cols-[minmax(0,1fr)_minmax(0,360px)] 2xl:grid-cols-[minmax(0,1fr)_minmax(0,min(460px,54vh))] 2xl:gap-16 md:gap-14">
+        <div className="min-w-0">
+            <Tabs
+              value={view}
+              onChange={(scrambleView) => updateSettings({ scrambleView })}
+              items={[
+                { value: "ready", label: "Cubo pronto" },
+                { value: "steps", label: "Passo a passo" },
+              ]}
+              className="mb-6"
+            />
             <div className="flex items-center justify-between">
-              <Kicker>Scramble · {length} movimentos</Kicker>
+              <Kicker>
+                {steps
+                  ? step >= moves.length
+                    ? "Scramble concluído"
+                    : `Movimento ${step + 1} de ${moves.length}`
+                  : `Scramble · ${length} movimentos`}
+              </Kicker>
               <button
                 type="button"
                 onClick={() => setScramble(randomScramble(length))}
@@ -67,8 +88,10 @@ function ScrambleTrainer() {
                 <RefreshCw className="size-3.5" /> novo
               </button>
             </div>
-            <p className="mt-4 font-mono text-2xl leading-relaxed font-medium tracking-tight sm:text-3xl">{scramble}</p>
-          </div>
+            <ScrambleText moves={moves} step={steps ? step : null} />
+        </div>
+        {/* No celular, o Passo a passo deixa o cubo junto do texto, antes do timer. */}
+        <div className={cn("min-w-0 md:col-start-1 md:row-start-2", steps && "order-3 md:order-none")}>
           <SpeedTimer
             onSolve={(ms) => {
               addSolve({ ms, scramble });
@@ -77,11 +100,27 @@ function ScrambleTrainer() {
           />
         </div>
         <CubeFrame
+          className="md:col-start-2 md:row-span-2 md:row-start-1 md:self-start"
           title="scramble.alg"
           accent="var(--cube-blue)"
           footerLeft={<Tag tone="dark">branco em cima · verde na frente</Tag>}
+          footerRight={
+            <button
+              type="button"
+              aria-label="Recentrar o cubo"
+              title="Recentrar o cubo"
+              className="grid size-7 place-items-center rounded text-white/70 transition hover:bg-white/10 hover:text-white"
+              onClick={(e) => {
+                // Sem o foco no botão, o espaço continua sendo só do timer.
+                e.currentTarget.blur();
+                cube.current?.resetView();
+              }}
+            >
+              <LocateFixed className="size-4" />
+            </button>
+          }
         >
-          <TwistyCube setup={scramble} />
+          {steps ? <ScrambleCube cube={cube} scramble={scramble} total={moves.length} step={step} onStep={setStep} /> : <TwistyCube ref={cube} setup={scramble} />}
         </CubeFrame>
       </div>
       <SolveStats solves={solves} />

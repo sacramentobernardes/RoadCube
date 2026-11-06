@@ -40,6 +40,9 @@ export interface Settings {
   avatar: string | null;
   hideTimer: boolean;
   scrambleLength: number;
+  /** Como o Treino mostra o scramble: cubo pronto ou embaralhando passo a passo. */
+  scrambleView: "ready" | "steps";
+  scrambleSpeed: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -48,6 +51,8 @@ export const DEFAULT_SETTINGS: Settings = {
   avatar: null,
   hideTimer: false,
   scrambleLength: 20,
+  scrambleView: "ready",
+  scrambleSpeed: 1,
 };
 
 export interface Streak {
