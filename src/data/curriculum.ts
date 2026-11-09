@@ -3,6 +3,7 @@ import {
   buildFromAnimation,
   caseCube,
   choice,
+  introCase,
   moveQuiz,
   theory,
   type Exercise,
@@ -275,27 +276,29 @@ export const CURRICULUM: Module[] = [
         "m2-corners",
         "Primeira Camada",
         "Quinas brancas",
-        ["lbl-corner-right", "lbl-corner-front", "lbl-corner-up"],
+        ["lbl-corner-right", "lbl-corner-front", "lbl-corner-up", "lbl-corner-twist-front", "lbl-corner-twist-right"],
         [
           theory("Inserindo quinas", [
             "Com a cruz branca embaixo, procure uma quina branca na camada de cima.",
             "Gire U até ela ficar acima do lugar dela (frente-direita) e veja para onde o branco aponta.",
+            "Se a quina já estiver no lugar, mas girada, há um algoritmo para cada lado do branco.",
             "Atalho: repetir R U R' U' até a quina resolver também funciona em qualquer caso!",
           ]),
         ],
       ),
-      algLesson("m2-middle", "Segunda Camada", "Meios: esquerda e direita", ["lbl-edge-right", "lbl-edge-left"], [
+      algLesson("m2-middle", "Segunda Camada", "Meios: esquerda, direita e invertido", ["lbl-edge-right", "lbl-edge-left", "lbl-edge-flipped"], [
         theory("Meios da segunda camada", [
           "Procure um meio na camada de cima que não tenha amarelo.",
           "Gire U até a cor da frente dele combinar com o centro da frente (formando um T invertido).",
           "Se a cor de cima dele combina com o centro da direita, use o algoritmo da direita; se combina com a esquerda, o da esquerda.",
+          "Se o meio estiver no lugar, mas invertido, faça o algoritmo da direita, U2 e o da direita de novo.",
         ]),
       ]),
       {
         id: "m2-yellow-cross",
         title: "Cruz Amarela",
         description: "Ponto, L, Linha e Cruz",
-        caseIds: ["lbl-yellow-cross"],
+        caseIds: ["lbl-yellow-cross", "lbl-yellow-cross-l"],
         exercises: [
           theory(
             "Os 4 estados",
@@ -314,6 +317,11 @@ export const CURRICULUM: Module[] = [
             "L",
             ["Segure o L apontando para trás e para a esquerda (como 9 horas). Faça o algoritmo duas vezes."],
             caseCube("oll-edge-l", { alg: "F R U R' U' F' F R U R' U' F'", autoplay: true, loop: true, controls: true }),
+          ),
+          theory(
+            "Atalho para o L",
+            ["Com o L na mesma posição, F U R U' R' F' forma a cruz de uma vez. É o mesmo algoritmo com R U trocado por U R."],
+            caseCube("lbl-yellow-cross-l", { autoplay: true, loop: true, controls: true }),
           ),
           choice("Que formato é este?", ["Ponto", "L", "Linha", "Cruz"], 2, {
             cube: caseCube("oll-edge-line"),
@@ -334,26 +342,28 @@ export const CURRICULUM: Module[] = [
           { kind: "execute", prompt: "Desafio: forme a cruz amarela a partir da Linha", caseId: "oll-edge-line" },
         ],
       },
-      algLesson("m2-yellow-face", "Face Amarela", "OLL básico com a Sune", ["lbl-sune"], [
+      algLesson("m2-yellow-face", "Face Amarela", "Sune e Antisune", ["lbl-sune", "lbl-antisune"], [
         theory("Orientando as quinas", [
           "Com a cruz amarela pronta, falta deixar as quinas com o amarelo para cima.",
-          "No método básico usamos só a Sune (R U R' U R U2 R'), repetindo e ajustando U entre as aplicações.",
+          "A Sune (R U R' U R U2 R') resolve qualquer caso, repetindo e ajustando U entre as aplicações.",
+          "A Antisune é um atalho: quando a única quina amarela fica na trás-direita, ela resolve de uma vez.",
           "Se houver uma única quina amarela em cima, coloque-a na frente-esquerda (formato de peixinho).",
         ]),
         choice("Quantas quinas amarelas para cima aparecem no caso do \"peixinho\"?", ["0", "1", "2", "4"], 1, {
           cube: caseCube("oll-sune"),
         }),
       ]),
-      algLesson("m2-corners-perm", "Permutar Quinas", "Posicionando os cantos", ["lbl-corners"], [
+      algLesson("m2-corners-perm", "Permutar Quinas", "Posicionando os cantos", ["lbl-corners", "lbl-corners-front"], [
         theory("Faróis", [
           "Olhe as laterais da camada de cima. Duas quinas com a mesma cor no mesmo lado formam \"faróis\".",
           "Coloque os faróis atrás e aplique o algoritmo. Se não houver faróis, aplique uma vez e procure de novo.",
+          "Atalho: com os faróis na frente, o segundo algoritmo gira as quinas no sentido contrário.",
         ]),
       ]),
-      algLesson("m2-edges-perm", "Permutar Meios", "Finalizando o cubo!", ["lbl-edges"], [
+      algLesson("m2-edges-perm", "Permutar Meios", "Finalizando o cubo!", ["lbl-edges", "lbl-edges-ccw"], [
         theory("O último passo", [
           "Agora só faltam os meios. Procure uma face lateral completa e coloque-a atrás.",
-          "O algoritmo gira os três meios restantes. Se ainda não resolver, aplique de novo.",
+          "O primeiro algoritmo gira os três meios restantes no sentido horário; o segundo, no anti-horário. Se errar o sentido, basta aplicar de novo.",
           "Se nenhuma face estiver completa, aplique uma vez de qualquer posição.",
         ]),
       ]),
