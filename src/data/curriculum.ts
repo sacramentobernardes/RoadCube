@@ -3,7 +3,6 @@ import {
   buildFromAnimation,
   caseCube,
   choice,
-  introCase,
   moveQuiz,
   theory,
   type Exercise,
@@ -342,22 +341,38 @@ export const CURRICULUM: Module[] = [
           { kind: "execute", prompt: "Desafio: forme a cruz amarela a partir da Linha", caseId: "oll-edge-line" },
         ],
       },
-      algLesson("m2-yellow-face", "Face Amarela", "Sune e Antisune", ["lbl-sune", "lbl-antisune"], [
+      algLesson("m2-yellow-face", "Face Amarela", "Os 7 casos e o método clássico", ["lbl-sune", "lbl-antisune", "lbl-h", "lbl-pi", "lbl-headlights", "lbl-t", "lbl-bowtie", "lbl-classic-twist"], [
         theory("Orientando as quinas", [
           "Com a cruz amarela pronta, falta deixar as quinas com o amarelo para cima.",
           "A Sune (R U R' U R U2 R') resolve qualquer caso, repetindo e ajustando U entre as aplicações.",
           "A Antisune é um atalho: quando a única quina amarela fica na trás-direita, ela resolve de uma vez.",
           "Se houver uma única quina amarela em cima, coloque-a na frente-esquerda (formato de peixinho).",
+          "Os outros 5 casos (H, Pi, Faróis, T e Gravata-borboleta) também têm um algoritmo direto cada.",
         ]),
+        theory(
+          "Método clássico: R' D' R D",
+          [
+            "Muitos tutoriais ensinam outro caminho: segure o amarelo em cima, leve uma quina errada para a frente-direita e repita R' D' R D até o amarelo dela subir.",
+            "Depois gire só a face de cima (U) para trazer a próxima quina errada e repita. Nunca gire o cubo inteiro no meio.",
+            "As camadas de baixo parecem se desmontar no caminho, mas voltam sozinhas quando todas as quinas ficam certas.",
+          ],
+          caseCube("lbl-classic-twist", { autoplay: true, loop: true, controls: true }),
+        ),
         choice("Quantas quinas amarelas para cima aparecem no caso do \"peixinho\"?", ["0", "1", "2", "4"], 1, {
           cube: caseCube("oll-sune"),
         }),
       ]),
-      algLesson("m2-corners-perm", "Permutar Quinas", "Posicionando os cantos", ["lbl-corners", "lbl-corners-front"], [
+      algLesson("m2-corners-perm", "Permutar Quinas", "Posicionando os cantos", ["lbl-corners", "lbl-corners-front", "lbl-corners-diagonal", "lbl-classic-position", "lbl-classic-position-cw"], [
         theory("Faróis", [
           "Olhe as laterais da camada de cima. Duas quinas com a mesma cor no mesmo lado formam \"faróis\".",
           "Coloque os faróis atrás e aplique o algoritmo. Se não houver faróis, aplique uma vez e procure de novo.",
           "Atalho: com os faróis na frente, o segundo algoritmo gira as quinas no sentido contrário.",
+          "Sem faróis, as quinas precisam trocar em diagonal: o algoritmo da diagonal resolve de uma vez.",
+        ]),
+        theory("Método clássico: posicionar antes de girar", [
+          "No método clássico, esta etapa vem antes da face amarela, porque o algoritmo dela gira as quinas.",
+          "Procure uma quina no lugar certo (as cores combinam com as laterais, mesmo que girada) e coloque-a na frente-direita.",
+          "Faça U R U' L' U R' U' L até as outras três irem para o lugar. Se nenhuma estiver certa, faça uma vez e procure de novo.",
         ]),
       ]),
       algLesson("m2-edges-perm", "Permutar Meios", "Finalizando o cubo!", ["lbl-edges", "lbl-edges-ccw"], [
