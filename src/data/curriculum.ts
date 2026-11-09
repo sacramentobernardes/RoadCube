@@ -290,14 +290,14 @@ export const CURRICULUM: Module[] = [
           "Procure um meio na camada de cima que não tenha amarelo.",
           "Gire U até a cor da frente dele combinar com o centro da frente (formando um T invertido).",
           "Se a cor de cima dele combina com o centro da direita, use o algoritmo da direita; se combina com a esquerda, o da esquerda.",
-          "Se o meio estiver no lugar, mas invertido, faça o algoritmo da direita, U2 e o da direita de novo.",
+          "Se o meio estiver no lugar, mas invertido, use R U2 R' U R U2 R' U F' U' F. Repetir o algoritmo da direita com U2 no meio também resolve, só que com mais movimentos.",
         ]),
       ]),
       {
         id: "m2-yellow-cross",
         title: "Cruz Amarela",
         description: "Ponto, L, Linha e Cruz",
-        caseIds: ["lbl-yellow-cross", "lbl-yellow-cross-l"],
+        caseIds: ["lbl-yellow-cross", "lbl-yellow-cross-l", "lbl-yellow-cross-l-front", "lbl-yellow-cross-dot"],
         exercises: [
           theory(
             "Os 4 estados",
@@ -321,6 +321,16 @@ export const CURRICULUM: Module[] = [
             "Atalho para o L",
             ["Com o L na mesma posição, F U R U' R' F' forma a cruz de uma vez. É o mesmo algoritmo com R U trocado por U R."],
             caseCube("lbl-yellow-cross-l", { autoplay: true, loop: true, controls: true }),
+          ),
+          theory(
+            "L na outra posição",
+            ["Se o L estiver com os meios da frente e da direita, use f R U R' U' f'. O f gira a camada da frente junto com a do meio."],
+            caseCube("lbl-yellow-cross-l-front", { autoplay: true, loop: true, controls: true }),
+          ),
+          theory(
+            "Atalho para o Ponto",
+            ["Do Ponto, F R U R' U' F' seguido de f R U R' U' f' forma a cruz de uma vez, sem precisar procurar o L no meio."],
+            caseCube("lbl-yellow-cross-dot", { autoplay: true, loop: true, controls: true }),
           ),
           choice("Que formato é este?", ["Ponto", "L", "Linha", "Cruz"], 2, {
             cube: caseCube("oll-edge-line"),

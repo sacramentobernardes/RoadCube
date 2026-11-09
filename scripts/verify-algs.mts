@@ -153,7 +153,8 @@ for (const c of ALG_CASES) {
 for (const c of ALG_CASES) {
   if (c.algs.length < 2) continue;
   const orientationOnly = c.view === "oll";
-  const pairOnly = c.preserve === "cross-but-fr";
+  // No F2L e na segunda camada só importa o par do slot frente-direita.
+  const pairOnly = c.preserve === "cross-but-fr" || c.preserve === "d-layer";
   const baseCase = solved.applyAlg(setupFor(c.algs[0]));
   for (const alg of c.algs.slice(1)) {
     const setup = setupFor(alg);
