@@ -449,7 +449,7 @@ export const CURRICULUM: Module[] = [
       algLesson("m7-edges-perm", "Permutar Meios", "Outras fórmulas para os meios", ["lbl-edges", "lbl-edges-ccw"], [
         theory("Outra forma de girar os meios", [
           "Estas fórmulas fazem o mesmo trabalho do básico, só com R e U: costumam ser mais rápidas de executar.",
-          "Com a face completa atrás, a primeira gira os meios no sentido horário e a segunda, no anti-horário.",
+          "Com a face completa atrás, a primeira gira os meios no sentido anti-horário e a segunda, no horário.",
         ]),
       ]),
     ],

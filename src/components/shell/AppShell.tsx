@@ -62,7 +62,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </Link>
             ))}
           </nav>
-          <div className="ml-auto flex items-center gap-5">
+          <div className="ml-auto flex items-center gap-3 sm:gap-5">
             {syncFailed && (
               <span className="hidden font-mono text-xs text-cube-red sm:block" role="status">
                 não salvo · tentando de novo
@@ -92,7 +92,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             key={href}
             href={href}
             className={cn(
-              "flex flex-1 flex-col items-center gap-1 py-2.5 font-mono text-[10px] tracking-wide uppercase",
+              "flex min-w-0 flex-1 flex-col items-center gap-1 py-2.5 font-mono text-[10px] tracking-normal uppercase sm:tracking-wide",
               isActive(pathname, href) ? "text-text" : "text-muted",
             )}
           >
