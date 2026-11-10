@@ -55,7 +55,7 @@ export function Trail() {
       <section id="trilha" className="mt-16 scroll-mt-20">
         <h2 className="text-2xl font-bold tracking-tight">Trilha</h2>
         <p className="mt-1 text-muted">
-          {AVAILABLE.length} lições em 5 módulos. Cada lição desbloqueia a próxima. Clique em um módulo para ver o caminho.
+          {AVAILABLE.length} lições em {CURRICULUM.length} módulos. Cada lição desbloqueia a próxima. Clique em um módulo para ver o caminho.
         </p>
         <ModuleList stateOf={stateOf} completed={completed} currentModuleId={currentModule?.id} />
       </section>

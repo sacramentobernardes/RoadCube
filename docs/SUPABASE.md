@@ -30,6 +30,7 @@ No painel, abra **SQL Editor** → **New query** e rode cada arquivo uma vez, ne
 2. [`supabase/migrations/0002_server_game_logic.sql`](../supabase/migrations/0002_server_game_logic.sql)
 3. [`supabase/migrations/0003_full_cases.sql`](../supabase/migrations/0003_full_cases.sql)
 4. [`supabase/migrations/0004_data_limits.sql`](../supabase/migrations/0004_data_limits.sql)
+5. [`supabase/migrations/0005_intermediate_method.sql`](../supabase/migrations/0005_intermediate_method.sql)
 
 ## 3. Configurar as chaves
 

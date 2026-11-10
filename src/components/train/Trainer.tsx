@@ -128,7 +128,7 @@ function ScrambleTrainer() {
   );
 }
 
-const SETS: AlgSet[] = ["pll", "oll", "f2l", "beginner"];
+const SETS: AlgSet[] = ["pll", "oll", "f2l", "intermediate", "beginner"];
 
 function CaseTrainer() {
   const [selected, setSelected] = useState<Set<string>>(() => new Set(ALG_CASES.filter((c) => c.set === "pll").map((c) => c.id)));

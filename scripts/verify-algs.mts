@@ -43,6 +43,8 @@ function requiredPieces(rule: PreserveRule): Required {
       return { edges: D_EDGES, corners: D_CORNERS, llOriented: false };
     case "d-layer-but-dfr":
       return { edges: D_EDGES, corners: [5, 6, 7], llOriented: false };
+    case "d-layer-but-dfl":
+      return { edges: D_EDGES, corners: [4, 6, 7], llOriented: false };
     case "cross-but-fr":
       return cross("fr");
     case "cross-but-br":

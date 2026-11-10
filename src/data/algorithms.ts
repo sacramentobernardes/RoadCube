@@ -3,7 +3,7 @@
 // e o verde na frente (exceto os da cruz/primeira camada, com branco embaixo).
 // Rode `npm run verify:algs` após editar para validar cada algoritmo.
 
-export type AlgSet = "beginner" | "f2l" | "oll" | "pll";
+export type AlgSet = "beginner" | "intermediate" | "f2l" | "oll" | "pll";
 
 export type CubeView = "full" | "cross" | "f2l" | "oll" | "pll" | "ll" | "centers" | "edges" | "corners";
 
@@ -12,12 +12,14 @@ export type CubeView = "full" | "cross" | "f2l" | "oll" | "pll" | "ll" | "center
  * - "f2l": primeiras duas camadas inteiras (algoritmos de última camada);
  * - "d-layer": camada de baixo inteira (segunda camada do método básico);
  * - "d-layer-but-dfr": camada de baixo exceto a quina frente-direita;
+ * - "d-layer-but-dfl": camada de baixo exceto a quina frente-esquerda;
  * - "cross-but-XX": cruz + todos os slots exceto o slot XX (F2L).
  */
 export type PreserveRule =
   | "f2l"
   | "d-layer"
   | "d-layer-but-dfr"
+  | "d-layer-but-dfl"
   | "cross-but-fr"
   | "cross-but-br"
   | "cross-but-bl";
@@ -37,6 +39,7 @@ export interface AlgCase {
 
 export const ALG_SET_LABELS: Record<AlgSet, string> = {
   beginner: "Método Básico",
+  intermediate: "Método Intermediário",
   f2l: "F2L",
   oll: "OLL",
   pll: "PLL",
@@ -157,10 +160,112 @@ const FULL_F2L_CASES: AlgCase[] = [
 ];
 
 export const ALG_CASES: AlgCase[] = [
-  // ───────────── Método básico (camadas) ─────────────
+  // ───────────── Método básico (camadas, poucas fórmulas) ─────────────
+  {
+    id: "basic-corner-right",
+    set: "beginner",
+    group: "Primeira Camada",
+    name: "Quina branca para a direita",
+    recognition: "Quina acima do lugar dela (frente-direita), com o branco virado para a direita.",
+    algs: ["R U R'"],
+    view: "f2l",
+    preserve: "d-layer-but-dfr",
+  },
+  {
+    id: "basic-corner-left",
+    set: "beginner",
+    group: "Primeira Camada",
+    name: "Quina branca para a esquerda",
+    recognition: "Quina acima do lugar dela (frente-esquerda), com o branco virado para a esquerda.",
+    algs: ["L' U' L"],
+    view: "f2l",
+    preserve: "d-layer-but-dfl",
+  },
+  {
+    id: "basic-corner-up",
+    set: "beginner",
+    group: "Primeira Camada",
+    name: "Quina branca para cima",
+    recognition: "Quina acima do lugar dela (frente-direita), com o branco virado para cima.",
+    algs: ["R U2 R' U' R U R'"],
+    view: "f2l",
+    preserve: "d-layer-but-dfr",
+  },
+  {
+    id: "basic-edge-right",
+    set: "beginner",
+    group: "Segunda Camada",
+    name: "Meio para a direita",
+    recognition: "Meio alinhado com o centro da frente; a cor de cima dele combina com o centro da direita.",
+    algs: ["U R U' R' U' F' U F"],
+    view: "f2l",
+    preserve: "d-layer",
+  },
+  {
+    id: "basic-edge-left",
+    set: "beginner",
+    group: "Segunda Camada",
+    name: "Meio para a esquerda",
+    recognition: "Meio alinhado com o centro da frente; a cor de cima dele combina com o centro da esquerda.",
+    algs: ["U' L' U L U F U' F'"],
+    view: "f2l",
+    preserve: "d-layer",
+  },
+  {
+    id: "basic-yellow-cross",
+    set: "beginner",
+    group: "Cruz Amarela",
+    name: "Cruz amarela",
+    recognition: "Linha amarela na horizontal. A mesma fórmula leva do Ponto ao L e do L à Linha.",
+    algs: ["F R U R' U' F'"],
+    view: "oll",
+    preserve: "f2l",
+  },
+  {
+    id: "basic-sune",
+    set: "beginner",
+    group: "Face Amarela",
+    name: "Sune",
+    recognition: "Uma quina amarela em cima, na frente-esquerda (formato de peixinho). Nos outros casos, a mesma fórmula é repetida.",
+    algs: ["R U R' U R U2 R'"],
+    view: "oll",
+    preserve: "f2l",
+  },
+  {
+    id: "basic-corners",
+    set: "beginner",
+    group: "Permutar Quinas",
+    name: "Trocar quinas (faróis na frente)",
+    recognition: "Faróis, duas quinas iguais no mesmo lado, na frente. Sem faróis, faça uma vez de qualquer lado e procure de novo.",
+    algs: ["R B' R F2 R' B R F2 R2"],
+    view: "pll",
+    preserve: "f2l",
+  },
+  {
+    id: "basic-edges-cw",
+    set: "beginner",
+    group: "Permutar Meios",
+    name: "Girar meios no sentido horário",
+    recognition: "Face lateral completa atrás; os outros três meios giram no sentido horário.",
+    algs: ["F2 U L R' F2 L' R U F2"],
+    view: "pll",
+    preserve: "f2l",
+  },
+  {
+    id: "basic-edges-ccw",
+    set: "beginner",
+    group: "Permutar Meios",
+    name: "Girar meios no sentido anti-horário",
+    recognition: "Face lateral completa atrás; os outros três meios giram no sentido anti-horário.",
+    algs: ["F2 U' L R' F2 L' R U' F2"],
+    view: "pll",
+    preserve: "f2l",
+  },
+
+  // ───────────── Método intermediário (um algoritmo por situação) ─────────────
   {
     id: "lbl-corner-right",
-    set: "beginner",
+    set: "intermediate",
     group: "Primeira Camada",
     name: "Quina branca para a direita",
     recognition: "Quina acima do seu lugar com o branco olhando para a direita.",
@@ -170,7 +275,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-corner-front",
-    set: "beginner",
+    set: "intermediate",
     group: "Primeira Camada",
     name: "Quina branca para a frente",
     recognition: "Quina acima do seu lugar com o branco olhando para a frente.",
@@ -180,7 +285,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-corner-up",
-    set: "beginner",
+    set: "intermediate",
     group: "Primeira Camada",
     name: "Quina branca para cima",
     recognition: "Quina acima do seu lugar com o branco olhando para cima.",
@@ -190,7 +295,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-edge-right",
-    set: "beginner",
+    set: "intermediate",
     group: "Segunda Camada",
     name: "Meio para a direita",
     recognition: "Meio alinhado com o centro da frente, precisa ir para a direita.",
@@ -200,7 +305,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-edge-left",
-    set: "beginner",
+    set: "intermediate",
     group: "Segunda Camada",
     name: "Meio para a esquerda",
     recognition: "Meio alinhado com o centro da frente, precisa ir para a esquerda.",
@@ -210,7 +315,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-yellow-cross",
-    set: "beginner",
+    set: "intermediate",
     group: "Cruz Amarela",
     name: "Cruz amarela (Linha / L)",
     recognition: "Linha na horizontal ou L na posição de 9 horas (atrás-esquerda).",
@@ -220,7 +325,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-sune",
-    set: "beginner",
+    set: "intermediate",
     group: "Face Amarela",
     name: "Sune (face amarela)",
     recognition: "Uma quina amarela em cima, na frente-esquerda (peixinho).",
@@ -230,7 +335,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-corners",
-    set: "beginner",
+    set: "intermediate",
     group: "Permutar Quinas",
     name: "Trocar quinas (faróis atrás)",
     recognition: "Par de quinas iguais (faróis) na face de trás.",
@@ -240,7 +345,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-edges",
-    set: "beginner",
+    set: "intermediate",
     group: "Permutar Meios",
     name: "Girar meios (face pronta atrás)",
     recognition: "Face lateral completa atrás; os três meios restantes giram.",
@@ -250,7 +355,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-corner-twist-front",
-    set: "beginner",
+    set: "intermediate",
     group: "Primeira Camada",
     name: "Quina girada (branco para a frente)",
     recognition: "A quina branca já está no lugar (embaixo, frente-direita), mas com o branco virado para a frente.",
@@ -260,7 +365,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-corner-twist-right",
-    set: "beginner",
+    set: "intermediate",
     group: "Primeira Camada",
     name: "Quina girada (branco para a direita)",
     recognition: "A quina branca já está no lugar (embaixo, frente-direita), mas com o branco virado para a direita.",
@@ -270,7 +375,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-edge-flipped",
-    set: "beginner",
+    set: "intermediate",
     group: "Segunda Camada",
     name: "Meio invertido",
     recognition: "O meio já está no lugar (frente-direita), mas com as cores trocadas. A última opção é o algoritmo da direita duas vezes, com U2 no meio.",
@@ -280,7 +385,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-yellow-cross-l",
-    set: "beginner",
+    set: "intermediate",
     group: "Cruz Amarela",
     name: "Cruz amarela direto do L",
     recognition: "L formado pelos meios de trás e da esquerda (posição de 9 horas). Forma a cruz de uma vez, sem repetir o algoritmo.",
@@ -290,7 +395,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-yellow-cross-l-front",
-    set: "beginner",
+    set: "intermediate",
     group: "Cruz Amarela",
     name: "Cruz amarela do L (L na frente-direita)",
     recognition: "L formado pelos meios da frente e da direita. Usa f, que gira a camada da frente junto com a do meio.",
@@ -300,7 +405,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-yellow-cross-dot",
-    set: "beginner",
+    set: "intermediate",
     group: "Cruz Amarela",
     name: "Cruz amarela direto do Ponto",
     recognition: "Só o centro amarelo em cima, sem nenhum meio amarelo. Junta o algoritmo da Linha com o do L na frente-direita e forma a cruz de uma vez.",
@@ -310,7 +415,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-antisune",
-    set: "beginner",
+    set: "intermediate",
     group: "Face Amarela",
     name: "Antisune (face amarela)",
     recognition: "Uma quina amarela em cima, na trás-direita. Resolve direto, sem repetir a Sune.",
@@ -320,7 +425,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-corners-front",
-    set: "beginner",
+    set: "intermediate",
     group: "Permutar Quinas",
     name: "Trocar quinas (faróis na frente)",
     recognition: "Par de quinas iguais (faróis) na face da frente; as outras três quinas giram no sentido contrário.",
@@ -330,7 +435,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-edges-ccw",
-    set: "beginner",
+    set: "intermediate",
     group: "Permutar Meios",
     name: "Girar meios ao contrário (face pronta atrás)",
     recognition: "Face lateral completa atrás; os três meios restantes giram no sentido anti-horário.",
@@ -340,7 +445,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-h",
-    set: "beginner",
+    set: "intermediate",
     group: "Face Amarela",
     name: "H (face amarela)",
     recognition: "Nenhuma quina amarela em cima; os amarelos das laterais formam pares na frente e atrás.",
@@ -350,7 +455,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-pi",
-    set: "beginner",
+    set: "intermediate",
     group: "Face Amarela",
     name: "Pi (face amarela)",
     recognition: "Nenhuma quina amarela em cima; um par de amarelos na esquerda, mais um na frente e um atrás.",
@@ -360,7 +465,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-headlights",
-    set: "beginner",
+    set: "intermediate",
     group: "Face Amarela",
     name: "Faróis (face amarela)",
     recognition: "Duas quinas amarelas em cima, na frente; os outros dois amarelos olham para trás.",
@@ -370,7 +475,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-t",
-    set: "beginner",
+    set: "intermediate",
     group: "Face Amarela",
     name: "T (face amarela)",
     recognition: "Duas quinas amarelas em cima, à direita; as outras duas têm o amarelo virado para a frente e para trás.",
@@ -380,7 +485,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-bowtie",
-    set: "beginner",
+    set: "intermediate",
     group: "Face Amarela",
     name: "Gravata-borboleta (face amarela)",
     recognition: "Duas quinas amarelas em cima, em diagonal: trás-direita e frente-esquerda.",
@@ -390,7 +495,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-classic-twist",
-    set: "beginner",
+    set: "intermediate",
     group: "Face Amarela",
     name: "Girar quinas com R' D' R D (método clássico)",
     recognition: "Exemplo do método: as duas quinas da direita com o amarelo virado para a direita. Com a quina na frente-direita, repita R' D' R D até o amarelo subir; gire só U e repita na próxima.",
@@ -400,7 +505,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-corners-diagonal",
-    set: "beginner",
+    set: "intermediate",
     group: "Permutar Quinas",
     name: "Trocar quinas na diagonal (sem faróis)",
     recognition: "Nenhum farol: as quinas da frente-direita e da trás-esquerda trocam de lugar. Ele também troca dois meios, que o passo seguinte arruma.",
@@ -410,7 +515,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-classic-position",
-    set: "beginner",
+    set: "intermediate",
     group: "Permutar Quinas",
     name: "Posicionar quinas (método clássico)",
     recognition: "Só a quina da frente-direita está no lugar (as cores combinam com as laterais, mesmo girada); as outras três giram no sentido anti-horário, vendo de cima.",
@@ -420,7 +525,7 @@ export const ALG_CASES: AlgCase[] = [
   },
   {
     id: "lbl-classic-position-cw",
-    set: "beginner",
+    set: "intermediate",
     group: "Permutar Quinas",
     name: "Posicionar quinas (método clássico, ao contrário)",
     recognition: "Só a quina da frente-direita está no lugar; as outras três giram no sentido horário, vendo de cima.",

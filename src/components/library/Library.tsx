@@ -20,9 +20,10 @@ import { Guide } from "@/components/guide/Guide";
 
 type LibraryTab = AlgSet | "guide";
 
-const SETS: AlgSet[] = ["beginner", "f2l", "oll", "pll"];
+const SETS: AlgSet[] = ["beginner", "intermediate", "f2l", "oll", "pll"];
 const SET_COLORS: Record<AlgSet, string> = {
   beginner: "var(--cube-blue)",
+  intermediate: "var(--cube-green)",
   f2l: "var(--cube-orange)",
   oll: "var(--cube-yellow)",
   pll: "var(--cube-red)",
