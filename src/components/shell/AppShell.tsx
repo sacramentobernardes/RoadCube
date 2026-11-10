@@ -43,7 +43,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-dvh">
       <header className="sticky top-0 z-30 border-b border-border bg-bg/85 backdrop-blur">
-        <div className="page-width flex h-14 items-center gap-8">
+        <div className="page-width flex h-14 items-center gap-4 sm:gap-8">
           <Logo />
           <nav className="hidden items-center gap-6 md:flex">
             {NAV.slice(0, 4).map(({ href, label }) => (
@@ -69,7 +69,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </span>
             )}
             {hydrated && <StatsPills />}
-            <ThemeToggle />
+            {/* No celular pequeno o tema fica só nas Configurações, para os contadores caberem. */}
+            <div className="hidden sm:block">
+              <ThemeToggle />
+            </div>
             <Link href="/profile" aria-label="Perfil" className="hidden md:block">
               <Avatar
                 value={hydrated ? avatar : null}
